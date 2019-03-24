@@ -1,0 +1,111 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Model\User;
+
+class UserController extends Controller
+{
+    // Quem vai poder cadastrar usuários é somente o administrador.
+       
+    public function __construct()
+    {
+        $this->middleware('role:tecnico');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        return 'Deu certooo';
+    }
+
+    public function getAllApicultores() {
+
+        //$apicultores = User::where('')
+        //$apicultores = DB::table('roles')->where('user_id', auth()->user()->id)->get();
+        $apicultores = User::where('tecnico_id', auth()->user()->id)->get();
+
+        foreach($apicultores as $apicultor){
+            $apicultor->qtdApiarios = \App\Model\Apiario::where('user_id', $apicultor->id)->count();
+        }
+
+        return response()->json([
+            'message' => 'Lista de apicultores',
+            'apicultores' => $apicultores,
+        ]);
+    }
+
+    public function qtdColmeiasApicultor
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}
