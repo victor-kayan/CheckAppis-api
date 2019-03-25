@@ -20,7 +20,7 @@ $factory->define(Colmeia::class, function (Faker $faker) {
         'nome' => $faker->name,
         'descricao' => $faker->name,
         'apiario_id' => $faker->randomElement([1,5]),
-        'foto' => 'http://192.168.200.253/storage/images/imgDefault.jpg'
+        'foto' => 'https://bee-check-api.herokuapp.com/storage/images/imgDefault.jpg'
     ];
 });
 
