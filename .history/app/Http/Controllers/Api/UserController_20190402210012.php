@@ -58,13 +58,14 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function update(Request $request, $id)
+    public function update($request, $id)
     {
-        $this->user = $this->user->findOrFail($id);
-    
+        //$this->user = $this->user->findOrFail($id);
+        //return $request->request;
+
         $request->validate([
             'name'      => 'required',
-            'password'  => 'required',
+            'password'  => 'required|confirm',
             'email'     => 'required|email',
         ]);
 

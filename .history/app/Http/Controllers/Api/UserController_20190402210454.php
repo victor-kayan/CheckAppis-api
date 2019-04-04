@@ -60,12 +60,15 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->user = $this->user->findOrFail($id);
-    
+        // //$this->user = $this->user->findOrFail($id);
+        // return response()->json([
+        //     'request' => $request->all()
+        // ]);
+
         $request->validate([
-            'name'      => 'required',
-            'password'  => 'required',
-            'email'     => 'required|email',
+            'request.name'      => 'required',
+            'request.password'  => 'required|confirm',
+            'request.email'     => 'required|email',
         ]);
 
         $this->user->update($request->all());
