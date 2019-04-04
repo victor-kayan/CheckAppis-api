@@ -20,7 +20,7 @@ $factory->define(Colmeia::class, function (Faker $faker) {
         'nome' => $faker->name,
         'descricao' => $faker->name,
         'apiario_id' => $faker->randomElement([1,5]),
-        'foto' => 'http://192.168.200.223/storage/images/imgDefault.jpg'
+        'foto' => 'https://s3-sa-east-1.amazonaws.com/beecheck/images/default.png'
     ];
 });
 

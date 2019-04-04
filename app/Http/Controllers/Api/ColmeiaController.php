@@ -54,48 +54,11 @@ class ColmeiaController extends Controller
      */
     public function store(Request $request)
     {
-        //return $request->foto['fileName'];
-        // $nameFile = null;
-
         $request->validate([
             'nome'        => 'required|string',
             'descricao'   => 'required|string',
             'apiario_id'  => 'required|exists:apiarios,id',
          ]);
- 
-        // // Verifica se informou o arquivo e se é válido
-        // if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
-
-        //     return 'Aquiiiii';
-            
-        //     // Define um aleatório para o arquivo baseado no timestamps atual
-        //     $name = uniqid(date('HisYmd'));
-    
-        //     // Recupera a extensão do arquivo
-        //     $extension = 'png';
-    
-        //     // Define finalmente o nome
-        //     $nameFile = "{$name}.{$extension}";
-    
-        //     // Faz o upload:
-        //     $upload = $request->image->storeAs('colmeias', $nameFile);
-        //     // Se tiver funcionado o arquivo foi armazenado em storage/app/public/categories/nomedinamicoarquivo.extensao
-    
-        //     // Verifica se NÃO deu certo o upload (Redireciona de volta)
-        //     if ( !$upload ){   
-        //         return response()->json([
-        //             'message' => 'Colmeia criada com sucesso',
-        //             'apiario' => $this->colmeia
-        //         ], 400);
-        //     }
-                    
-            
-    
-        //     return response()->json([
-        //         'message' => 'Colmeia criada com sucesso',
-        //         'apiario' => $this->colmeia
-        //     ], 201);
-        // }
 
         $this->colmeia = $this->colmeia::create([
             'nome'        => $request->nome,

@@ -33,21 +33,19 @@ class Colmeia extends Model
 
      public function uploadImage($request){
 
-        //$image = "https://bee-check-api.herokuapp.com/storage/images/imgDefault.jpg";
-        $image = "http://192.168.200.223/storage/images/imgDefault.jpg";
+        $baseURLImage = "https://s3-sa-east-1.amazonaws.com/beecheck/images/"; 
 
         if($request->foto ) {
             $name = $request->foto['fileName']; 
 
-            $exists = Storage::disk('public')->has($name);
+            $exists = Storage::disk('s3')->has($name);
             if($exists){
                 Storage::delete($name);
             }
-            Storage::disk('s3')->put($name, base64_decode($request->foto['data']));
-            $url = Storage::url($name);
-            // Storage::disk('public')->put($name, base64_decode($request->foto['data']));       
-            // $image = "http://192.168.200.223/storage/images/".$name;
-            $image = $url;
+            Storage::disk('s3')->put("images/".$name, base64_decode($request->foto['data']));
+            $image = $baseURLImage.$name;
+        }else{
+            $image = $baseURLImage."default.png";
         }
 
         return $image;

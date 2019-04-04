@@ -21,7 +21,7 @@ class UserTableSeeder extends Seeder
         $apicultor1->email = 'apicultor@gmail.com';
         $apicultor1->password = bcrypt('123456');
         $apicultor1->tecnico_id = '4';
-        $apicultor1->foto = 'http://192.168.200.223/storage/images/user1.jpg';
+        $apicultor1->foto = 'https://s3-sa-east-1.amazonaws.com/beecheck/images/apicultor-default.jpg';
         $apicultor1->save();
         $apicultor1->roles()->attach($role_apicultor);
 
@@ -29,7 +29,7 @@ class UserTableSeeder extends Seeder
         $apicultor2->name = 'apicultor Name 2';
         $apicultor2->email = 'apicultor1@gmail.com';
         $apicultor2->password = bcrypt('123456');
-        $apicultor2->foto = 'http://192.168.200.223/storage/images/user1.jpg';
+        $apicultor2->foto = 'https://s3-sa-east-1.amazonaws.com/beecheck/images/apicultor-default.jpg';
         $apicultor2->save();
         $apicultor2->roles()->attach($role_apicultor);
 
@@ -38,7 +38,7 @@ class UserTableSeeder extends Seeder
         $apicultor3->email = 'apicultor2@gmail.com';
         $apicultor3->password = bcrypt('123456');
         $apicultor3->tecnico_id = '4';
-        $apicultor3->foto = 'http://192.168.200.223/storage/images/user1.jpg';
+        $apicultor3->foto = 'https://s3-sa-east-1.amazonaws.com/beecheck/images/apicultor-default.jpg';
         $apicultor3->save();
         $apicultor3->roles()->attach($role_apicultor);
 
@@ -46,7 +46,7 @@ class UserTableSeeder extends Seeder
         $tecnico->name = 'tecnico Name';
         $tecnico->email = 'tecnico@gmail.com';
         $tecnico->password = bcrypt('123456');
-        $tecnico->foto = 'http://192.168.200.223/storage/images/user1.jpg';
+        $tecnico->foto = 'https://s3-sa-east-1.amazonaws.com/beecheck/images/apicultor-default.jpg';
         $tecnico->save();
         $tecnico->roles()->attach($role_tecnico);
     }
