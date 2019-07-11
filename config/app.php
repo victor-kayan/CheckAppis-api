@@ -1,4 +1,5 @@
 <?php
+use Carbon\Carbon;
 
 return [
 
@@ -67,7 +68,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' =>  Carbon::createFromTimestamp(0, 'America/Fortaleza')->timezone->getName(),
 
     /*
     |--------------------------------------------------------------------------

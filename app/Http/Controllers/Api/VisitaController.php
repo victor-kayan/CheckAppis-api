@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\VisitaApiario;
 use App\Model\VisitaColmeia;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class VisitaApiarioController extends Controller
+class VisitaController extends Controller
 {
     private $visitaApiario;
 
-    public function __construct(VisitaApiario $visitaApiario) {
+    public function __construct(VisitaApiario $visitaApiario)
+    {
         $this->visitaApiario = $visitaApiario;
         $this->middleware('role:apicultor');
     }
@@ -23,19 +25,20 @@ class VisitaApiarioController extends Controller
     public function index()
     {
 
-    } 
+    }
 
-    public function visitasByApiario ($id) {
+    public function visitasByApiario($id)
+    {
 
-        $visitas = $this->visitaApiario->where('apiario_id', $id)->orderBy('data_visita', 'ASC')->get();
+        $visitas = $this->visitaApiario->where('apiario_id', $id)->orderBy('created_at', 'ASC')->with('visitaColmeias')->get();
 
         foreach ($visitas as $visita) {
-            $visita->qtd_colmeias_visitadas = \App\Model\VisitaColmeia::where('visita_apiario_id', $visita->id)->count();
+            $visita->qtd_colmeias_visitadas = VisitaColmeia::where('visita_apiario_id', $visita->id)->count();
         }
-        
+
         return response()->json([
-            'message' => 'visitas do apiario de id ',
-            'visitas' => $visitas 
+            'message' => 'visitas do apiario',
+            'visitas' => $visitas,
         ]);
     }
 
@@ -54,18 +57,31 @@ class VisitaApiarioController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'tem_comida'    => 'required|boolean',
-            'tem_sombra'    => 'required|boolean',
-            'tem_agua'      => 'required|boolean',
-            'data_visita'   => 'required|date|after:yesterday',
-            'apiario_id'    => 'required|exists:apiarios,id'
+            'visitas_colmeias' => 'array',
+            'visita_apiario' => 'required',
+            'apiario_id' => 'required|exists:apiarios,id',
         ]);
 
-        $this->visitaApiario = $this->visitaApiario::create($request->all());
+        try {
+            DB::transaction(function () use ($request) {
+                $this->visitaApiario = VisitaApiario::create(array_merge($request->visita_apiario, ['apiario_id' => $request->apiario_id]));
+
+                if ($this->visitaApiario) {
+                    foreach ($request->visitas_colmeias as $visita_colmeia) {
+                        VisitaColmeia::create(array_merge($visita_colmeia, ['visita_apiario_id' => $this->visitaApiario->id]));
+                    }
+                }
+            });
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'falha ao registrar visita',
+                'error' => $th,
+            ], 403);
+        }
 
         return response()->json([
-            'message' => 'Visita realizada no apiario',
-            'visitaApiario' => $this->visitaApiario
+            'message' => 'Visita regristrada com sucesso',
+            'visita' => VisitaApiario::where('id', $this->visitaApiario->id)->with('visitaColmeias')->first(),
         ]);
     }
 
@@ -76,9 +92,10 @@ class VisitaApiarioController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function teste(Request $r){
+    public function teste(Request $r)
+    {
         return $r;
-    } 
+    }
 
     public function show($id)
     {
@@ -118,8 +135,8 @@ class VisitaApiarioController extends Controller
     {
         VisitaColmeia::where('visita_apiario_id', $id)->delete();
         $this->visitaApiario->findOrFail($id)->delete();
-       
+
         return response()->json([], 204);
-       
+
     }
 }

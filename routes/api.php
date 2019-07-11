@@ -37,9 +37,7 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
 
         'colmeia' => 'ColmeiaController', 
 
-        'visita/apiario'  => 'VisitaApiarioController',
-
-        'visita/colmeia'  => 'VisitaColmeiaController',
+        'visita/apiario'  => 'VisitaController',
 
         'intervencao/apiario' => 'IntervencaoController',
 
@@ -51,7 +49,7 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
 
     Route::get('colmeias/apiario/{id}', 'ColmeiaController@colmeiasApiario');
 
-    Route::get('visita/apiario/apiario/{id}' , 'VisitaApiarioController@visitasByApiario');
+    Route::get('visita/apiario/apiario/{id}' , 'VisitaController@visitasByApiario');
 
     Route::get('apicultores', 'UserController@getAllApicultores');
 
@@ -60,7 +58,4 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
 
     Route::get('intervencao/colmeia/intervencao/{intervencao_id}', 'IntervencaoColmeiaController@indexByIntervencao');
     Route::get('intervencao/colmeia/concluir/{intervencao_id}', 'IntervencaoColmeiaController@concluirIntervencao');
-
-    Route::get('visitas/colmeias/visita/apiario/{visita_apiario_id}', 'VisitaColmeiaController@visitasColmeiasByVisitaApiario');
-
 });
