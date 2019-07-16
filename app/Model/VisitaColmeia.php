@@ -15,7 +15,7 @@ class VisitaColmeia extends Model
     ];
 
     protected $hidden = [
-        'deleted_at', 'updated_at', 'updated_at',
+        'deleted_at', 'updated_at',
     ];
 
     protected $dates = [
