@@ -49,7 +49,7 @@ class VisitaController extends Controller
         return response()->json([
             'message' => 'visitas do apiario',
             'visitas' => $visitas,
-        ]);
+        ], 200, [], JSON_NUMERIC_CHECK);
     }
 
     /**
@@ -89,10 +89,25 @@ class VisitaController extends Controller
             ], 403);
         }
 
+        $visita = VisitaApiario::where('id', $this->visitaApiario->id)->with('visitaColmeias.colmeia')->first();
+
+        $this->visitaApiario->qtd_colmeias_com_postura = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('tem_postura', true)->count();
+        $this->visitaApiario->qtd_colmeias_sem_postura = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('tem_postura', false)->count();
+
+        $this->visitaApiario->qtd_colmeias_com_abelhas_mortas = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('tem_abelhas_mortas', true)->count();
+        $this->visitaApiario->qtd_colmeias_sem_abelhas_mortas = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('tem_abelhas_mortas', false)->count();
+
+        $this->visitaApiario->qtd_quadros_mel = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('qtd_quadros_mel', '>', 0)->count();
+        $this->visitaApiario->qtd_quadros_polen = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('qtd_quadros_polen', '>', 0)->count();
+        $this->visitaApiario->qtd_cria_aberta = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('qtd_cria_aberta', '>', 0)->count();
+        $this->visitaApiario->qtd_cria_fechada = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('qtd_cria_fechada', '>', 0)->count();
+        $this->visitaApiario->qtd_quadros_analizados = $this->visitaApiario->qtd_quadros_mel + $this->visitaApiario->qtd_quadros_polen + $this->visitaApiario->qtd_cria_aberta + $this->visitaApiario->qtd_cria_fechada;
+        $this->visitaApiario->visita_colmeias = VisitaColmeia::where('visita_apiario_id', $this->visitaApiario->id)->with('colmeia')->get();
+
         return response()->json([
             'message' => 'Visita regristrada com sucesso',
-            'visita' => VisitaApiario::where('id', $this->visitaApiario->id)->with('visitaColmeias')->first(),
-        ]);
+            'visita' => $this->visitaApiario,
+        ], 200, [], JSON_NUMERIC_CHECK);
     }
 
     /**
