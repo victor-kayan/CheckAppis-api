@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Colmeia;
-use App\Model\User;
-use App\Model\Apiario;
+use Illuminate\Http\Request;
+use App\Model\VisitaColmeia;
 
 class ColmeiaController extends Controller
 {
     private $colmeia;
 
-    public function __construct(Colmeia $colmeia){
+    public function __construct(Colmeia $colmeia)
+    {
         $this->colmeia = $colmeia;
         $this->middleware('role:apicultor');
     }
@@ -26,23 +26,24 @@ class ColmeiaController extends Controller
         $url = 'https://s3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/';
         $images = [];
         $files = \Illuminate\Support\Facades\Storage::disk('s3')->files('images');
-            foreach ($files as $file) {
-                $images[] = [
-                    'name' => str_replace('images/', '', $file),
-                    'src' => $url . $file
-                ];
-            }
+        foreach ($files as $file) {
+            $images[] = [
+                'name' => str_replace('images/', '', $file),
+                'src' => $url . $file,
+            ];
+        }
 
         return $images;
     }
 
-    public function colmeiasApiario($id){
+    public function colmeiasApiario($id)
+    {
         // return $id;
         $colmeias = Colmeia::where('apiario_id', $id)->get();
 
         return response()->json([
-            'message' => 'Lista de colmeias do apiario '.$id,
-            'colmeias' => $colmeias
+            'message' => 'Lista de colmeias do apiario ' . $id,
+            'colmeias' => $colmeias,
         ], 200);
     }
 
@@ -55,24 +56,24 @@ class ColmeiaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nome'        => 'required|string',
-            'descricao'   => 'required|string',
-            'apiario_id'  => 'required|exists:apiarios,id',
-         ]);
+            'nome' => 'required|string',
+            'descricao' => 'required|string',
+            'apiario_id' => 'required|exists:apiarios,id',
+        ]);
 
         $this->colmeia = $this->colmeia::create([
-            'nome'        => $request->nome,
-            'descricao'   => $request->descricao,
-            'apiario_id'  => $request->apiario_id,
+            'nome' => $request->nome,
+            'descricao' => $request->descricao,
+            'apiario_id' => $request->apiario_id,
         ]);
 
         $this->colmeia->foto = $this->colmeia->uploadImage($request);
-    
+
         $this->colmeia->save();
-        
+
         return response()->json([
             'message' => 'Colmeia salva com sucesso',
-            'colmeia' => $this->colmeia
+            'colmeia' => $this->colmeia,
         ], 201);
     }
 
@@ -88,7 +89,7 @@ class ColmeiaController extends Controller
 
         return response()->json([
             'message' => 'Detalhes da colmeia',
-            'colmeia' => $this->colmeia 
+            'colmeia' => $this->colmeia,
         ]);
     }
 
@@ -104,18 +105,18 @@ class ColmeiaController extends Controller
         $this->colmeia = $this->colmeia->findOrFail($id);
 
         $this->colmeia->update([
-            'nome'        => $request->nome,
-            'descricao'   => $request->descricao,
-            'apiario_id'  => $request->apiario_id,
+            'nome' => $request->nome,
+            'descricao' => $request->descricao,
+            'apiario_id' => $request->apiario_id,
         ]);
-        if($request->foto != null){
+        if ($request->foto != null) {
             $this->colmeia->foto = $this->colmeia->uploadImage($request);
             $this->colmeia->save();
         }
-        
+
         return response()->json([
             'message' => 'Colmeia salva com sucesso',
-            'colmeia' => $this->colmeia
+            'colmeia' => $this->colmeia,
         ], 200);
     }
 
@@ -127,9 +128,10 @@ class ColmeiaController extends Controller
      */
     public function destroy($id)
     {
-        $this->colmeia = $this->colmeia->findOrFail($id);                 
-
+        $this->colmeia = $this->colmeia->findOrFail($id);
+        $this->colmeia->visitaColmeias()->delete();
         $deleted = $this->colmeia->delete();
+    
 
         if ($deleted) {
             return response()->json([], 204);

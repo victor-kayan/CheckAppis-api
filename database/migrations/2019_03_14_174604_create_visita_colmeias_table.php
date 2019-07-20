@@ -20,7 +20,6 @@ class CreateVisitaColmeiasTable extends Migration
             $table->integer('qtd_quadros_polen');
             $table->integer('qtd_cria_aberta');
             $table->integer('qtd_cria_fechada');
-            $table->date('data_visita');
             $table->string('observacao')->nullable(true);
             $table->string('tem_postura');
 

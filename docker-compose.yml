@@ -1,0 +1,56 @@
+# bee-check-api
+
+
+# compose syntax version.
+version: "3.6"
+
+# services declaration.
+services:
+  # PostgreSQL
+  postgres:
+    image: postgres:10.7
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=bee-check
+      - POSTGRES_PASSWORD=bee-check
+      - POSTGRES_DB=bee-check
+    ports:
+      - target: 5432
+        published: 5432
+  # Web Application
+  web:
+    image: ambientum/php:7.2-nginx
+    volumes:
+      - .:/var/www/app
+      - dot-config:/home/ambientum/.config
+      - dot-cache:/home/ambientum/.cache
+      - dot-local:/home/ambientum/.local
+      - dot-composer:/home/ambientum/.composer
+    environment:
+      - FRAMEWORK=laravel
+      - XDEBUG_ENABLED=true
+      - OPCACHE_MODE=normal
+      - PHP_MEMORY_LIMIT=256M
+    ports:
+      - "80:8080"
+    links:
+      - postgres
+
+# volumes declaration.
+volumes:
+  # postgres-data
+  postgres-data:
+    driver: local
+  # dot-config
+  dot-config:
+    driver: local
+  # dot-cache
+  dot-cache:
+    driver: local
+  # dot-local
+  dot-local:
+    driver: local
+  # dot-composer
+  dot-composer:
+    driver: local

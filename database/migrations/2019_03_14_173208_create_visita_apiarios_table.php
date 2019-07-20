@@ -18,7 +18,6 @@ class CreateVisitaApiariosTable extends Migration
             $table->boolean('tem_comida')->default(false);
             $table->boolean('tem_sombra')->default(false);
             $table->boolean('tem_agua')->default(false);
-            $table->date('data_visita');
             $table->string('observacao')->nullable(true);
 
             $table->unsignedInteger('apiario_id');

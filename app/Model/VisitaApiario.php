@@ -10,22 +10,24 @@ class VisitaApiario extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'tem_agua', 'tem_sombra', 'tem_comida', 'data_visita', 'apiario_id', 'observacao'
-     ];
+        'tem_agua', 'tem_sombra', 'tem_comida', 'apiario_id', 'observacao',
+    ];
 
-     protected $hidden = [
-        'deleted_at', 'updated_at', 'created_at', 'updated_at'
-     ];
+    protected $hidden = [
+        'deleted_at', 'updated_at', 'updated_at',
+    ];
 
-     protected $dates = [
+    protected $dates = [
         'deleted_at',
-     ];
+    ];
 
-     public function visitaColmeias () {
-         return $this->hasMany(VisitaColmeia::class);
-     }
+    public function visitaColmeias()
+    {
+        return $this->hasMany(VisitaColmeia::class);
+    }
 
-     public function apiario(){
+    public function apiario()
+    {
         return $this->belongsTo(Apiario::class);
-     }
+    }
 }
