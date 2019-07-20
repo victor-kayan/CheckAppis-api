@@ -18,14 +18,6 @@ services:
     ports:
       - target: 5432
         published: 5432
-  # Redis
-  redis:
-    image: redis:5-alpine
-    volumes:
-      - redis-data:/data
-    ports:
-      - target: 6379
-        published: 6379
   # Web Application
   web:
     image: ambientum/php:7.2-nginx
@@ -41,21 +33,14 @@ services:
       - OPCACHE_MODE=normal
       - PHP_MEMORY_LIMIT=256M
     ports:
-      - target: 8080
-        published: 8080
-      - target: 8083
-        published: 8083
+      - "80:8080"
     links:
       - postgres
-      - redis
 
 # volumes declaration.
 volumes:
   # postgres-data
   postgres-data:
-    driver: local
-  # redis-data
-  redis-data:
     driver: local
   # dot-config
   dot-config:

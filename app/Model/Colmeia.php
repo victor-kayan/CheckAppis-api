@@ -28,7 +28,7 @@ class Colmeia extends Model
      }
 
      public function visitaColmeias () {
-         return $this->hasMany(Visita::class);
+         return $this->hasMany(VisitaColmeia::class);
      }
 
      public function uploadImage($request){

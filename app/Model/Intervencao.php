@@ -11,7 +11,7 @@ class Intervencao extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'descricao', 'data_inicio', 'data_fim' , 'apiario_id', 'tecnico_id', 'is_concluido'
+        'descricao', 'data_inicio', 'data_fim' , 'apiario_id', 'tecnico_id', 'is_concluido',
      ];
 
      protected $dates = [
@@ -28,5 +28,9 @@ class Intervencao extends Model
 
      public function user () {
         return $this->belongsTo(User::class);
+    }
+
+    public function intervencaoColmeias () {
+        return $this->hasMany(IntervencaoColmeia::class);
     }
 }

@@ -53,7 +53,7 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
 
     Route::get('apicultores', 'UserController@getAllApicultores');
 
-    Route::get('intervencao/apiario/apiario/{apiario_id}', 'IntervencaoController@indexByApiario');
+    Route::get('intervencoes/user', 'IntervencaoController@indexByUserLogged');
     Route::get('intervencao/apiario/concluir/{apiario_id}', 'IntervencaoController@concluirIntervencao');
 
     Route::get('intervencao/colmeia/intervencao/{intervencao_id}', 'IntervencaoColmeiaController@indexByIntervencao');

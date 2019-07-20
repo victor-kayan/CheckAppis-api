@@ -3,11 +3,9 @@
 namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class VisitaColmeia extends Model
 {
-    use SoftDeletes;
 
     protected $fillable = [
         'descricao', 'id', 'tem_abelhas_mortas', 'qtd_quadros_mel', 'qtd_quadros_polen', 'visita_apiario_id',
@@ -15,11 +13,7 @@ class VisitaColmeia extends Model
     ];
 
     protected $hidden = [
-        'deleted_at', 'updated_at',
-    ];
-
-    protected $dates = [
-        'deleted_at',
+        'updated_at',
     ];
 
     public function colmeia()

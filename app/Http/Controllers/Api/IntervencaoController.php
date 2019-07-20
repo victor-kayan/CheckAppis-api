@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Intervencao;
+use Illuminate\Http\Request;
 
 class IntervencaoController extends Controller
 {
     private $intervencao;
 
-    public function __construct(Intervencao $intervencao){
+    public function __construct(Intervencao $intervencao)
+    {
         $this->$intervencao = $intervencao;
     }
     /**
@@ -23,37 +24,36 @@ class IntervencaoController extends Controller
         //
     }
 
-    public function indexByApiario($apiario_id){
-        // $intervencoes = $this->intervencao->; 
-        $intervencoes = Intervencao::where('apiario_id', $apiario_id)->where('is_concluido', false)->orderBy('created_at', 'ASC')->get();
-        foreach ($intervencoes as $intervencao) {
-            $intervencao->tecnico = \App\Model\User::where('id', $intervencao->tecnico_id)->first();
-        }
+    public function indexByUserLogged()
+    {
+        $intervencoes = Intervencao::whereHas('apiario', function ($query) {
+            $query->where('user_id', auth()->user()->id);
+        })->where('is_concluido', false)->with(['user', 'intervencaoColmeias'])->orderBy('created_at', 'DESC')->get();
 
         return response()->json([
             'message' => 'Lista de intervencaos',
-            'intervencoes' => $intervencoes
+            'intervencoes' => $intervencoes,
         ], 200);
     }
 
-    public function concluirIntervencao($intervencao_id){
-        $intervencaosColmeia =  \App\Model\IntervencaoColmeia::where('intervencao_id',$intervencao_id)->where('is_concluido', false)->count();
+    public function concluirIntervencao($intervencao_id)
+    {
+        $intervencaosColmeia = \App\Model\IntervencaoColmeia::where('intervencao_id', $intervencao_id)->where('is_concluido', false)->count();
 
-        if($intervencaosColmeia && $intervencaosColmeia > 0) {
+        if ($intervencaosColmeia && $intervencaosColmeia > 0) {
             return response()->json([
                 'message' => 'Este apiario possui intervenções especificas para as colmeias',
-                'status' => 442
+                'status' => 442,
             ], 200);
-        }
-        else{
+        } else {
             $intervencao = Intervencao::findOrFail($intervencao_id);
             $intervencao->is_concluido = true;
             $intervencao->save();
             return response()->json([
                 'message' => 'Itervencao concluida',
-                'intervencao' => $intervencao
+                'intervencao' => $intervencao,
             ], 200);
-            
+
         }
         return $intervencaosColmeia;
     }
@@ -66,7 +66,7 @@ class IntervencaoController extends Controller
      */
     public function store(Request $request)
     {
-        
+
     }
 
     /**

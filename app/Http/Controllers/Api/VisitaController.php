@@ -30,7 +30,7 @@ class VisitaController extends Controller
     public function visitasByApiario($apiario_id)
     {
 
-        $visitas = $this->visitaApiario->where('apiario_id', $apiario_id)->orderBy('id', 'ASC')->with('visitaColmeias.colmeia')->get();
+        $visitas = $this->visitaApiario->where('apiario_id', $apiario_id)->orderBy('id', 'DESC')->with('visitaColmeias.colmeia')->get();
 
         foreach ($visitas as $visita) {
             $visita->qtd_colmeias_com_postura = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('tem_postura', true)->count();

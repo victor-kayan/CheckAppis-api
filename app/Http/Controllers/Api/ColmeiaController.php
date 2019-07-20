@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Model\Colmeia;
 use Illuminate\Http\Request;
+use App\Model\VisitaColmeia;
 
 class ColmeiaController extends Controller
 {
@@ -128,8 +129,9 @@ class ColmeiaController extends Controller
     public function destroy($id)
     {
         $this->colmeia = $this->colmeia->findOrFail($id);
-
+        $this->colmeia->visitaColmeias()->delete();
         $deleted = $this->colmeia->delete();
+    
 
         if ($deleted) {
             return response()->json([], 204);
