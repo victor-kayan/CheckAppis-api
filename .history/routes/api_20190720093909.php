@@ -31,8 +31,6 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
         'intervencao/colmeia' => 'IntervencaoColmeiaController',
     ]);
 
-    Route::get('home', 'HomeTecnicoController@index');
-
     Route::get('cidades/uf/{uf}', 'CidadeController@cidadesByUf');
 
     Route::get('apiarios/user', 'ApiarioController@apiariosUserLogado');
@@ -48,4 +46,6 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
 
     Route::get('visitas/colmeias/visita/apiario/{visita_apiario_id}', 'VisitaColmeiaController@visitasColmeiasByVisitaApiario');
     Route::get('visita/apiario/apiario/{id}', 'VisitaApiarioController@visitasByApiario');
+
+    Route::get('home', 'HomeTecnicoController@index');
 });

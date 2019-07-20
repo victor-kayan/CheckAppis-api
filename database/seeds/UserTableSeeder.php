@@ -29,6 +29,7 @@ class UserTableSeeder extends Seeder
         $apicultor2->name = 'apicultor Name 2';
         $apicultor2->email = 'apicultor1@gmail.com';
         $apicultor2->password = bcrypt('123456');
+        $apicultor2->tecnico_id = '4';
         $apicultor2->foto = 'https://s3-sa-east-1.amazonaws.com/beecheck/images/apicultor-default.jpg';
         $apicultor2->save();
         $apicultor2->roles()->attach($role_apicultor);

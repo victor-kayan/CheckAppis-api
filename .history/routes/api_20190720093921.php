@@ -32,7 +32,6 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
     ]);
 
     Route::get('home', 'HomeTecnicoController@index');
-
     Route::get('cidades/uf/{uf}', 'CidadeController@cidadesByUf');
 
     Route::get('apiarios/user', 'ApiarioController@apiariosUserLogado');

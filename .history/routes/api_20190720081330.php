@@ -31,21 +31,23 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
         'intervencao/colmeia' => 'IntervencaoColmeiaController',
     ]);
 
-    Route::get('home', 'HomeTecnicoController@index');
-
     Route::get('cidades/uf/{uf}', 'CidadeController@cidadesByUf');
 
     Route::get('apiarios/user', 'ApiarioController@apiariosUserLogado');
 
     Route::get('colmeias/apiario/{id}', 'ColmeiaController@colmeiasApiario');
 
+    Route::get('visita/apiario/apiario/{id}', 'VisitaApiarioController@visitasByApiario');
+
     Route::get('apicultores', 'UserController@getAllApicultores');
 
     Route::get('intervencao/apiario/apiario/{apiario_id}', 'IntervencaoController@indexByApiario');
     Route::get('intervencao/apiario/concluir/{apiario_id}', 'IntervencaoController@concluirIntervencao');
+
     Route::get('intervencao/colmeia/intervencao/{intervencao_id}', 'IntervencaoColmeiaController@indexByIntervencao');
     Route::get('intervencao/colmeia/concluir/{intervencao_id}', 'IntervencaoColmeiaController@concluirIntervencao');
 
     Route::get('visitas/colmeias/visita/apiario/{visita_apiario_id}', 'VisitaColmeiaController@visitasColmeiasByVisitaApiario');
-    Route::get('visita/apiario/apiario/{id}', 'VisitaApiarioController@visitasByApiario');
+
+    Route::get('home', 'HomeTecnicoController@index');
 });

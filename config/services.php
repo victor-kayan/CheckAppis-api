@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Third Party Services
@@ -13,6 +12,12 @@ return [
     | to have a conventional place to find your various credentials.
     |
     */
+
+    'facebook' => [
+        'client_id' => env('FACEBOOK_CLIENT_ID'),
+        'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
+        'redirect' => 'http://localhost:8000/login/facebook/token',
+    ],
 
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
@@ -43,5 +48,4 @@ return [
             'tolerance' => env('STRIPE_WEBHOOK_TOLERANCE', 300),
         ],
     ],
-
 ];
