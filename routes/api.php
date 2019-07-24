@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -11,7 +9,7 @@ use Illuminate\Http\Request;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
+ */
 
 Route::prefix('auth')->group(function () {
 
@@ -35,27 +33,27 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
 
         'apiario' => 'ApiarioController',
 
-        'colmeia' => 'ColmeiaController', 
+        'colmeia' => 'ColmeiaController',
 
-        'visita/apiario'  => 'VisitaController',
+        'visita' => 'VisitaController',
 
         'intervencao/apiario' => 'IntervencaoController',
 
         'intervencao/colmeia' => 'IntervencaoColmeiaController',
-        
+
     ]);
 
     Route::get('apiarios/user', 'ApiarioController@apiariosUserLogado');
 
-    Route::get('colmeias/apiario/{id}', 'ColmeiaController@colmeiasApiario');
+    Route::get('apiario/{apiario_id}/colmeias', 'ColmeiaController@colmeiasApiario');
 
-    Route::get('visita/apiario/apiario/{id}' , 'VisitaController@visitasByApiario');
+    Route::get('apiario/{apiario_id}/visitas', 'VisitaController@visitasByApiario');
 
     Route::get('apicultores', 'UserController@getAllApicultores');
 
     Route::get('intervencoes/user', 'IntervencaoController@indexByUserLogged');
-    Route::get('intervencao/apiario/concluir/{apiario_id}', 'IntervencaoController@concluirIntervencao');
+    Route::get('intervencao/{intervencao_id}/concluir', 'IntervencaoController@concluirIntervencao');
 
-    Route::get('intervencao/colmeia/intervencao/{intervencao_id}', 'IntervencaoColmeiaController@indexByIntervencao');
-    Route::get('intervencao/colmeia/concluir/{intervencao_id}', 'IntervencaoColmeiaController@concluirIntervencao');
+    Route::get('apiario/{apiario_id}/intervencoes/colmeias', 'IntervencaoColmeiaController@indexByApiario');
+    Route::get('intervencao/colmeia/{intervencao_id}/concluir', 'IntervencaoColmeiaController@concluirIntervencao');
 });
