@@ -1,20 +1,10 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
- */
 Route::options('{all}', function () {
     return response('ok', 200)
-        ->header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE')
-        ->header('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With')
-        ->header('Access-Control-Allow-Origin', '*');
+    ->header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE')
+    ->header('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With')
+    ->header('Access-Control-Allow-Origin', '*');
 })->where('all', '.*');
 
 Route::prefix('auth')->group(function () {
@@ -47,15 +37,15 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
 
     Route::get('apiarios/user', 'ApiarioController@apiariosUserLogado');
 
-    Route::get('apiario/{apiario_id}/colmeias', 'ColmeiaController@colmeiasApiario');
-
-    Route::get('apiario/{apiario_id}/visitas', 'VisitaController@visitasByApiario');
+    Route::get('colmeias/apiario/{id}', 'ColmeiaController@colmeiasApiario');
 
     Route::get('apicultores', 'UserController@getAllApicultores');
 
-    Route::get('intervencoes/user', 'IntervencaoController@indexByUserLogged');
-    Route::get('intervencao/{intervencao_id}/concluir', 'IntervencaoController@concluirIntervencao');
+    Route::get('intervencao/apiario/apiario/{apiario_id}', 'IntervencaoController@indexByApiario');
+    Route::get('intervencao/apiario/concluir/{apiario_id}', 'IntervencaoController@concluirIntervencao');
+    Route::get('intervencao/colmeia/intervencao/{intervencao_id}', 'IntervencaoColmeiaController@indexByIntervencao');
+    Route::get('intervencao/colmeia/concluir/{intervencao_id}', 'IntervencaoColmeiaController@concluirIntervencao');
 
-    Route::get('apiario/{apiario_id}/intervencoes/colmeias', 'IntervencaoColmeiaController@indexByApiario');
-    Route::get('intervencao/colmeia/{intervencao_id}/concluir', 'IntervencaoColmeiaController@concluirIntervencao');
+    Route::get('visitas/colmeias/visita/apiario/{visita_apiario_id}', 'VisitaColmeiaController@visitasColmeiasByVisitaApiario');
+    Route::get('visita/apiario/apiario/{id}', 'VisitaApiarioController@visitasByApiario');
 });

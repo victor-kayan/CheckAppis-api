@@ -24,22 +24,28 @@ class ApiarioController extends Controller
      */
     public function index()
     {
-        $this->apiario = $this->apiario->where('tecnico_id', auth()->user()->id)->get();
+        $this->apiario = $this->apiario->where('tecnico_id', auth()->user()->id)->orderBy('updated_at', 'DESC')->get();
+
+        foreach ($this->apiario as $a) {
+            $qtdColmeias = Colmeia::where('apiario_id', $a->id)->get()->count();
+            $a->responsavel = $a->user->name;
+            $a->qtdColmeias = $qtdColmeias;
+        }
 
         return response()->json([
             'message' => 'Lista de apiarios',
-            'apiarios' => $this->apiario
-        ], 200); 
+            'apiarios' => $this->apiario,
+        ], 200);
     }
 
-    public function apiariosUserLogado () {
-
+    public function apiariosUserLogado()
+    {
         $this->apiario = $this->apiario->where('user_id', auth()->user()->id)->with('colmeias')->get();
 
         return response()->json([
             'message' => 'Lista de apiarios',
-            'apiarios' =>  $this->apiario
-        ], 200); 
+            'apiarios' => $this->apiario,
+        ], 200);
     }
 
     // public function apiarioColmeias($id){
@@ -55,7 +61,8 @@ class ApiarioController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -69,24 +76,25 @@ class ApiarioController extends Controller
         ]);
 
         $this->apiario = Apiario::create([
-            'nome'       => $request->nome,
-            'endereco'   => $request->endereco,
-            'user_id'    => $request->user_id,
-            'latitude'   => $request->latitude,
-            'longitude'  => $request->longitude,
-            'tecnico_id' => $request->user()->id 
+            'nome' => $request->nome,
+            'endereco' => $request->endereco,
+            'user_id' => $request->user_id,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
+            'tecnico_id' => $request->user()->id,
         ]);
-     
+
         return response()->json([
             'message' => 'Apiario criado com sucesso',
-            'apiario' => $this->apiario
+            'apiario' => $this->apiario,
         ], 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -95,15 +103,16 @@ class ApiarioController extends Controller
 
         return response()->json([
             'message' => 'Detalhes de um apiario',
-            'apiario' => $this->apiario
-        ] , 200);
+            'apiario' => $this->apiario,
+        ], 200);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -121,22 +130,23 @@ class ApiarioController extends Controller
         ]);
 
         $this->apiario->update($request->all());
-        
+
         return response()->json([
             'message' => 'Apiario editado',
-            'apario' => $this->apiario
-        ] , 200);  
+            'apario' => $this->apiario,
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $this->apiario = $this->apiario->findApiario($id);                       
+        $this->apiario = $this->apiario->findApiario($id);
 
         $deleted = $this->apiario->delete();
 
@@ -148,5 +158,4 @@ class ApiarioController extends Controller
             ], 500);
         }
     }
-    
 }

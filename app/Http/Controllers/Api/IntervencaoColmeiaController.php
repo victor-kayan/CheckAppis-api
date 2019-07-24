@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Model\IntervencaoColmeia;
 use Illuminate\Http\Request;
+use App\Model\User;
 
 class IntervencaoColmeiaController extends Controller
 {

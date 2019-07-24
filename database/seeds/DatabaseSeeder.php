@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Model\Role;
-use App\Model\User;
+use Illuminate\Database\Eloquent\Model;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,14 +12,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // Chamando o Seeder de Roles
-        $this->call(RoleTableSeeder::class);
-        // Chamando o Seeder de Users
-        $this->call(UserTableSeeder::class);
+        Model::unguard();
 
-        factory(App\Model\Apiario::class, 5)->create();
-        factory(App\Model\Colmeia::class, 5)->create();
-        factory(App\Model\Intervencao::class, 5)->create();
-        factory(App\Model\IntervencaoColmeia::class, 15)->create();
+        //POPULAR TABELA DE ESTADOS E CIDADES//
+        echo ('*** RODANDO SEEDERS ***    ');
+
+        $this->call('RoleTableSeeder');
+        $this->call('UserTableSeeder');
+        $this->call('EstadoCidadeSeeder');
+
+        Model::reguard();
     }
 }
