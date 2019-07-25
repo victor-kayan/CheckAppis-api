@@ -11,41 +11,48 @@ class Colmeia extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'nome', 'foto', 'descricao', 'apiario_id'
-     ];
+        'nome', 'foto', 'descricao', 'apiario_id',
+    ];
 
     protected $dates = [
         'deleted_at',
     ];
 
     protected $hidden = [
-        'deleted_at', 'updated_at', 'created_at'
+        'deleted_at', 'updated_at', 'created_at',
     ];
- 
-     public function apiario ()
-     {
+
+    public function apiario()
+    {
         return $this->belongsTo(Apiario::class);
-     }
+    }
 
-     public function visitaColmeias () {
-         return $this->hasMany(VisitaColmeia::class);
-     }
+    public function intervencaoColmeias()
+    {
+        return $this->hasMany(IntervencaoColmeia::class);
+    }
 
-     public function uploadImage($request){
+    public function visitaColmeias()
+    {
+        return $this->hasMany(VisitaColmeia::class);
+    }
 
-        $baseURLImage = "https://s3-sa-east-1.amazonaws.com/beecheck/images/"; 
+    public function uploadImage($request)
+    {
 
-        if($request->foto ) {
-            $name = $request->foto['fileName']; 
+        $baseURLImage = "https://s3-sa-east-1.amazonaws.com/beecheck/images/";
+
+        if ($request->foto) {
+            $name = $request->foto['fileName'];
 
             $exists = Storage::disk('s3')->has($name);
-            if($exists){
+            if ($exists) {
                 Storage::delete($name);
             }
-            Storage::disk('s3')->put("images/".$name, base64_decode($request->foto['data']));
-            $image = $baseURLImage.$name;
-        }else{
-            $image = $baseURLImage."default.png";
+            Storage::disk('s3')->put("images/" . $name, base64_decode($request->foto['data']));
+            $image = $baseURLImage . $name;
+        } else {
+            $image = $baseURLImage . "default.png";
         }
 
         return $image;

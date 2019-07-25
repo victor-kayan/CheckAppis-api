@@ -20,10 +20,10 @@ class CreateUsersTable extends Migration
             $table->string('password')->nullable(true);
             $table->string('tecnico_id')->nullable(true);
 
-            $table->unsignedInteger('endereco_id');
-            $table->foreign('endereco_id')
-                ->references('id')
-                ->on('enderecos');
+            // $table->unsignedInteger('endereco_id');
+            // $table->foreign('endereco_id')
+            //     ->references('id')
+            //     ->on('enderecos');
 
             $table->softDeletes();
             $table->rememberToken();

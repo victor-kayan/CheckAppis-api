@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Apiario;
 use App\Model\Colmeia;
+use Illuminate\Http\Request;
 
 class ApiarioController extends Controller
 {
@@ -14,7 +14,7 @@ class ApiarioController extends Controller
     public function __construct(Apiario $apiario)
     {
         $this->apiario = $apiario;
-        $this->middleware('role:tecnico', ['except' => ['apiariosUserLogado']]);
+        $this->middleware('role:tecnico', ['except' => ['apiariosUserLogado', 'getApiariosWithColmeiasWithIntervencoes']]);
     }
 
     /**
@@ -36,6 +36,20 @@ class ApiarioController extends Controller
             'message' => 'Lista de apiarios',
             'apiarios' => $this->apiario,
         ], 200);
+    }
+
+    public function getApiariosWithColmeiasWithIntervencoes()
+    {
+        $apiarios = Apiario::whereHas('colmeias', function ($query) {
+            $query->whereHas('intervencaoColmeias', function ($query2) {
+                $query2->where('is_concluido', false);
+            });
+        })->where('user_id', auth()->user()->id)->get();
+
+        return response()->json([
+            'message' => 'Lista de apiarios',
+            'apiarios' => $apiarios,
+        ]);
     }
 
     public function apiariosUserLogado()

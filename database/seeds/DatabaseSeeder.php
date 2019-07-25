@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,5 +22,11 @@ class DatabaseSeeder extends Seeder
         $this->call('EstadoCidadeSeeder');
 
         Model::reguard();
+
+        factory(App\Model\Apiario::class, 5)->create();
+        factory(App\Model\Colmeia::class, 5)->create();
+        factory(App\Model\Intervencao::class, 5)->create();
+        factory(App\Model\IntervencaoColmeia::class, 15)->create();
+
     }
 }
