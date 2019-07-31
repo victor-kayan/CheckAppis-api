@@ -25,7 +25,7 @@ class CreateApiariosTable extends Migration
                 ->references('id')
                 ->on('users');
 
-            $table->unsignedInteger('endereco_id');
+            $table->unsignedInteger('endereco_id')->nullable(true);
             $table->foreign('endereco_id')
                     ->references('id')
                     ->on('enderecos');

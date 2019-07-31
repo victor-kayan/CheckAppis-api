@@ -1,8 +1,8 @@
 <?php
 
 use App\Model\Colmeia;
-use Illuminate\Support\Str;
 use Faker\Generator as Faker;
+use App\Model\Apiario;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +19,7 @@ $factory->define(Colmeia::class, function (Faker $faker) {
     return [
         'nome' => $faker->name,
         'descricao' => $faker->name,
-        'apiario_id' => $faker->randomElement([1,5]),
-        'foto' => 'https://s3-sa-east-1.amazonaws.com/beecheck/images/default.png'
+        'apiario_id' => Apiario::all()->random()->id,
+        'foto' => 'https://s3-sa-east-1.amazonaws.com/beecheck/images/default.png',
     ];
 });
-
-
