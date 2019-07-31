@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Apiario;
 use App\Model\Colmeia;
+use App\Model\Endereco;
+use App\Model\Cidade;
 
 class ApiarioController extends Controller
 {
@@ -17,25 +19,21 @@ class ApiarioController extends Controller
         $this->middleware('role:tecnico', ['except' => ['apiariosUserLogado']]);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $this->apiario = $this->apiario->where('tecnico_id', auth()->user()->id)->orderBy('updated_at', 'DESC')->get();
+        $this->apiario = $this->apiario->where('tecnico_id', auth()->user()->id)
+            ->with(['endereco', 'apicultor', 'tecnico'])
+            ->orderBy('updated_at', 'DESC')->get();
 
         foreach ($this->apiario as $a) {
-            $qtdColmeias = Colmeia::where('apiario_id', $a->id)->get()->count();
-            $a->responsavel = $a->user->name;
+            $qtdColmeias = Colmeia::where('apiario_id', $a->id)->count();
             $a->qtdColmeias = $qtdColmeias;
         }
 
         return response()->json([
             'message' => 'Lista de apiarios',
             'apiarios' => $this->apiario,
-        ], 200);
+        ], 200, [], JSON_NUMERIC_CHECK);
     }
 
     public function apiariosUserLogado()
@@ -48,77 +46,67 @@ class ApiarioController extends Controller
         ], 200);
     }
 
-    // public function apiarioColmeias($id){
+    public function storeAnReturnEndereco($request)
+    {
+        $cidade = Cidade::where(['nome' => $request->nome_cidade, 'uf', $request->uf])->first();
 
-    //     $colmeias = Colmeia::where('apiario_id', $id)->get();
+        $endereco = Endereco::create([
+            'cidade_id' => $cidade->id,
+            'logradouro' => $request->logradouro,
+        ]);
 
-    //     return response()->json([
-    //         'message' => 'Lista de colmeias do apiario '.$id,
-    //         'colmeias' => $colmeias
-    //     ], 200);
-    // }
+        return $endereco;
+    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $request->validate([
             'nome' => 'required|string',
-            'endereco' => 'required|string',
-            'user_id' => 'required|exists:users,id',
+            'descricao' => 'required|string|max:50',
             'latitude' => 'required',
             'longitude' => 'required',
+            'apicultor_id' => 'required|exists:users,id',
+            'logradouro' => 'required|max:70',
         ]);
 
-        $this->apiario = Apiario::create([
-            'nome' => $request->nome,
-            'endereco' => $request->endereco,
-            'user_id' => $request->user_id,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
-            'tecnico_id' => $request->user()->id,
-        ]);
+        \DB::transaction(function () use ($request) {
+            $endereco = $this->storeAnReturnEndereco($request);
+
+            $this->apiario = Apiario::create([
+                'nome' => $request->nome,
+                'descricao' => $request->descricao,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+                'endereco_id' => $endereco->id,
+                'apicultor_id' => $request->apicultor_id,
+                'tecnico_id' => $request->user()->id,
+            ]);
+        });
 
         return response()->json([
-            'message' => 'Apiario criado com sucesso',
+            'message' => 'Apiário cadastrado com sucesso',
             'apiario' => $this->apiario,
         ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        $this->apiario = $this->apiario->findApiario($id);
+        $this->apiario = $this->apiario->where('id', $id)
+            ->with(['endereco', 'apicultor', 'tecnico'])
+            ->orderBy('updated_at', 'DESC')->first();
+
+        $qtdColmeias = Colmeia::where('apiario_id', $this->apiario->id)->count();
+        $this->apiario->qtd_Colmeias = $qtdColmeias;
 
         return response()->json([
             'message' => 'Detalhes de um apiario',
             'apiario' => $this->apiario,
-        ], 200);
+        ], 200, [], JSON_NUMERIC_CHECK);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         return $request;
-        //Metodo findApiario, busca o apiario pertencente ao userLogado e e verifica o id que veio na requisição.
         $this->apiario = $this->apiario->findApiario($id);
 
         $request->validate([
@@ -132,18 +120,11 @@ class ApiarioController extends Controller
         $this->apiario->update($request->all());
 
         return response()->json([
-            'message' => 'Apiario editado',
+            'message' => 'Apiário alterado com sucesso',
             'apario' => $this->apiario,
         ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $this->apiario = $this->apiario->findApiario($id);

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\EnderecoController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\Model\User;
 use App\Model\Role;
 use Socialite;
+use App\Model\Endereco;
 
 class AutenticadorControlador extends Controller
 {
@@ -14,21 +16,30 @@ class AutenticadorControlador extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:50',
+            'cidade_id' => 'required|exists:cidades,id',
+            'logradouro' => 'required|max:100',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|confirmed|min:6|max:30',
+            'telefone' => 'required',
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'tecnico_id' => auth()->user()->id,
-        ]);
+        \DB::transaction(function () use ($request) {
+            $endereco = new EnderecoController(new Endereco());
+            $endereco_db = $endereco->store($request);
 
-        $user->roles()->attach(Role::where('name', 'apicultor')->first());
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'telefone' => $request->telefone,
+                'endereco_id' => $endereco_db->id,
+                'password' => bcrypt($request->password),
+                'tecnico_id' => auth()->user()->id,
+            ]);
+            $user->roles()->attach(Role::where('name', 'apicultor')->first());
+        });
 
         return response()->json([
-            'message' => 'Usuario criado com sucesso',
+            'message' => 'Usuário cadastrado com sucesso',
         ], 201);
     }
 
@@ -109,7 +120,7 @@ class AutenticadorControlador extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'foto' => env('APP_URL').str_replace(public_path(), null, $diretorio),
-                ]);
+            ]);
 
             $role_tecnico = Role::where('name', 'tecnico')->first();
             $user_db->roles()->attach($role_tecnico);

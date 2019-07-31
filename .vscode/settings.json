@@ -1,0 +1,15 @@
+{
+  "files.exclude": {
+    "node_modules": "explorerExcludedFiles",
+    "public/hot": "explorerExcludedFiles",
+    "public/storage": "explorerExcludedFiles",
+    "vendor": "explorerExcludedFiles",
+    ".env": "explorerExcludedFiles",
+    ".phpunit.result.cache": "explorerExcludedFiles",
+    ".history": "explorerExcludedFiles",
+    "Homestead.json": "explorerExcludedFiles",
+    "Homestead.yaml": "explorerExcludedFiles",
+    "npm-debug.log": "explorerExcludedFiles",
+    "yarn-error.log": "explorerExcludedFiles"
+  }
+}

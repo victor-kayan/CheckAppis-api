@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Model\Colmeia;
 use Illuminate\Http\Request;
-use App\Model\VisitaColmeia;
 
 class ColmeiaController extends Controller
 {
@@ -16,6 +15,7 @@ class ColmeiaController extends Controller
         $this->colmeia = $colmeia;
         $this->middleware('role:apicultor');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -23,13 +23,13 @@ class ColmeiaController extends Controller
      */
     public function index()
     {
-        $url = 'https://s3.' . env('AWS_DEFAULT_REGION') . '.amazonaws.com/' . env('AWS_BUCKET') . '/';
+        $url = 'https://s3.'.env('AWS_DEFAULT_REGION').'.amazonaws.com/'.env('AWS_BUCKET').'/';
         $images = [];
         $files = \Illuminate\Support\Facades\Storage::disk('s3')->files('images');
         foreach ($files as $file) {
             $images[] = [
                 'name' => str_replace('images/', '', $file),
-                'src' => $url . $file,
+                'src' => $url.$file,
             ];
         }
 
@@ -38,11 +38,10 @@ class ColmeiaController extends Controller
 
     public function colmeiasApiario($id)
     {
-        // return $id;
         $colmeias = Colmeia::where('apiario_id', $id)->get();
 
         return response()->json([
-            'message' => 'Lista de colmeias do apiario ' . $id,
+            'message' => 'Lista de colmeias do apiario '.$id,
             'colmeias' => $colmeias,
         ], 200);
     }
@@ -50,7 +49,8 @@ class ColmeiaController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -80,7 +80,8 @@ class ColmeiaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -93,13 +94,6 @@ class ColmeiaController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $this->colmeia = $this->colmeia->findOrFail($id);
@@ -109,6 +103,7 @@ class ColmeiaController extends Controller
             'descricao' => $request->descricao,
             'apiario_id' => $request->apiario_id,
         ]);
+
         if ($request->foto != null) {
             $this->colmeia->foto = $this->colmeia->uploadImage($request);
             $this->colmeia->save();
@@ -120,18 +115,11 @@ class ColmeiaController extends Controller
         ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $this->colmeia = $this->colmeia->findOrFail($id);
         $this->colmeia->visitaColmeias()->delete();
         $deleted = $this->colmeia->delete();
-    
 
         if ($deleted) {
             return response()->json([], 204);

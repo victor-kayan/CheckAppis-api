@@ -6,22 +6,17 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateApiariosTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('apiarios', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nome');
-            $table->string('endereco');
+            $table->string('descricao');
             $table->string('latitude');
             $table->string('longitude');
 
-            $table->unsignedInteger('user_id');
-            $table->foreign('user_id')
+            $table->unsignedInteger('apicultor_id');
+            $table->foreign('apicultor_id')
                 ->references('id')
                 ->on('users');
 
@@ -30,16 +25,16 @@ class CreateApiariosTable extends Migration
                 ->references('id')
                 ->on('users');
 
+            $table->unsignedInteger('endereco_id');
+            $table->foreign('endereco_id')
+                    ->references('id')
+                    ->on('enderecos');
+
             $table->softDeletes();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('apiarios');

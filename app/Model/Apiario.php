@@ -10,36 +10,49 @@ class Apiario extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'nome', 'endereco', 'user_id', 'tecnico_id', 'latitude', 'longitude',
+          'nome', 'descricao', 'endereco_id', 'apicultor_id', 'tecnico_id', 'latitude', 'longitude',
      ];
 
-     protected $dates = [
+    protected $dates = [
         'deleted_at',
     ];
 
     protected $hidden = [
-        'deleted_at', 'updated_at', 'created_at'
+        'deleted_at',
     ];
- 
-     public function colmeias ()
-     {
+
+    public function colmeias()
+    {
         return $this->hasMany(Colmeia::class);
-     }
+    }
 
-     public function user () {
-         return $this->belongsTo(User::class);
-     }
+    public function apicultor()
+    {
+        return $this->belongsTo(User::class);
+    }
 
-     public function visitaApiarios (){
-         return $this->hasMany(VisitaApiario::class);
-     }
+    public function tecnico()
+    {
+        return $this->belongsTo(User::class);
+    }
 
-     public function findApiario ($id) {
-        $apiario = Apiario::where('id', $id)->where('tecnico_id', auth()->user()->id)->first();    
-        if($apiario != null){
+    public function endereco()
+    {
+        return $this->belongsTo(Endereco::class);
+    }
+
+    public function visitaApiarios()
+    {
+        return $this->hasMany(VisitaApiario::class);
+    }
+
+    public function findApiario($id)
+    {
+        $apiario = Apiario::where('id', $id)->where('tecnico_id', auth()->user()->id)->first();
+        if ($apiario != null) {
             return $apiario;
         }
-        abort(404, 'Not found apiario');
-     }
- 
+        abort(404, 'Apiário não encontrado.');
+        // return $apiario ? $apiario : abort(422, 'Apiáio não encontrado');
+    }
 }

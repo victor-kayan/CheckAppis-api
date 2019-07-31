@@ -6,9 +6,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateUsersTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
@@ -16,14 +13,15 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('foto')->nullable(true);
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable(true);
             $table->string('password')->nullable(true);
+            $table->string('telefone')->nullable(true);
             $table->string('tecnico_id')->nullable(true);
+            $table->timestamp('email_verified_at')->nullable(true);
 
-            $table->unsignedInteger('endereco_id');
+            $table->unsignedInteger('endereco_id')->nullable(true);
             $table->foreign('endereco_id')
                 ->references('id')
-                ->on('enderecos');
+                ->on('enderecos')->onDelete('cascade');
 
             $table->softDeletes();
             $table->rememberToken();
@@ -31,9 +29,6 @@ class CreateUsersTable extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down()
     {
         Schema::dropIfExists('users');

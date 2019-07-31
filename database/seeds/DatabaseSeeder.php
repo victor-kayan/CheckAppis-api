@@ -7,19 +7,17 @@ class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
-     *
-     * @return void
      */
     public function run()
     {
         Model::unguard();
 
         //POPULAR TABELA DE ESTADOS E CIDADES//
-        echo ('*** RODANDO SEEDERS ***    ');
+        echo '*** RODANDO SEEDERS ***    ';
 
+        $this->call('EstadoCidadeSeeder');
         $this->call('RoleTableSeeder');
         $this->call('UserTableSeeder');
-        $this->call('EstadoCidadeSeeder');
 
         Model::reguard();
     }
