@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Model\Intervencao;
+use App\Model\IntervencaoColmeia;
 use App\Model\User;
 use Illuminate\Http\Request;
 
@@ -22,6 +23,24 @@ class IntervencaoController extends Controller
     public function index()
     {
         //
+    }
+
+    public function countIntervencoesByUser()
+    {
+        $id = auth()->user()->id;
+        $countIntervencoes = Intervencao::whereHas('apiario', function ($query) use ($id) {
+            $query->where('user_id', $id);
+        })->where('is_concluido', false)->count();
+
+        $countIntervencoesColmeias = IntervencaoColmeia::whereHas('intervencao', function ($query) use ($id) {
+            $query->whereHas('apiario', function ($query2) use ($id) {
+                $query2->where('user_id', $id);
+            });
+        })->where('is_concluido', false)->count();
+
+        return response()->json([
+            'count_intervencoes' => $countIntervencoes + $countIntervencoesColmeias,
+        ]);
     }
 
     public function indexByUserLogged()

@@ -14,7 +14,14 @@ class ApiarioController extends Controller
     public function __construct(Apiario $apiario)
     {
         $this->apiario = $apiario;
-        $this->middleware('role:tecnico', ['except' => ['apiariosUserLogado', 'getApiariosWithColmeiasWithIntervencoes']]);
+        $this->middleware('role:tecnico', ['except' => ['apiariosUserLogado', 'getApiariosWithColmeiasWithIntervencoes', 'countApairosByUser']]);
+    }
+
+    public function countApairosByUser()
+    {
+        return response()->json([
+            'count_apiarios' => Apiario::where('user_id', auth()->user()->id)->count(),
+        ]);
     }
 
     /**

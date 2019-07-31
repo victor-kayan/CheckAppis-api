@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Model\Colmeia;
 use Illuminate\Http\Request;
-use App\Model\VisitaColmeia;
 
 class ColmeiaController extends Controller
 {
@@ -16,6 +15,17 @@ class ColmeiaController extends Controller
         $this->colmeia = $colmeia;
         $this->middleware('role:apicultor');
     }
+
+    public function countColmeiasByUser()
+    {
+        $id = auth()->user()->id;
+        return response()->json([
+            'count_colmeias' => Colmeia::whereHas('apiario', function ($query) use ($id) {
+                $query->where('user_id', $id);
+            })->count(),
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -131,7 +141,6 @@ class ColmeiaController extends Controller
         $this->colmeia = $this->colmeia->findOrFail($id);
         $this->colmeia->visitaColmeias()->delete();
         $deleted = $this->colmeia->delete();
-    
 
         if ($deleted) {
             return response()->json([], 204);

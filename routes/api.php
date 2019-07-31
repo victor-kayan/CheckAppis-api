@@ -56,4 +56,8 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
 
     Route::get('apiario/{apiario_id}/intervencoes/colmeias', 'IntervencaoColmeiaController@indexByApiario');
     Route::get('intervencao/colmeia/{intervencao_id}/concluir', 'IntervencaoColmeiaController@concluirIntervencao');
+
+    Route::get('apicultor/apiarios/count', 'ApiarioController@countApairosByUser');
+    Route::get('apicultor/colmeias/count', 'ColmeiaController@countColmeiasByUser');
+    Route::get('apicultor/intervencoes/count', 'IntervencaoController@countIntervencoesByUser');
 });
