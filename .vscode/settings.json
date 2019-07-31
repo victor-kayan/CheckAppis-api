@@ -3,6 +3,7 @@
     "node_modules": "explorerExcludedFiles",
     "public/hot": "explorerExcludedFiles",
     "public/storage": "explorerExcludedFiles",
+    "storage/*.key": "explorerExcludedFiles",
     "vendor": "explorerExcludedFiles",
     ".env": "explorerExcludedFiles",
     ".phpunit.result.cache": "explorerExcludedFiles",

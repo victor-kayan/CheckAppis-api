@@ -19,7 +19,7 @@ class Intervencao extends Model
     ];
 
     protected $hidden = [
-        'deleted_at', 'updated_at', 'tecnico_id', 'is_concluido'
+        'deleted_at', 'updated_at', 'is_concluido'
     ];
 
     public function apiario(){

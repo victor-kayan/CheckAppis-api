@@ -16,6 +16,17 @@ class ColmeiaController extends Controller
         $this->middleware('role:apicultor');
     }
 
+    public function countColmeiasByUser()
+    {
+        $id = auth()->user()->id;
+
+        return response()->json([
+            'count_colmeias' => Colmeia::whereHas('apiario', function ($query) use ($id) {
+                $query->where('user_id', $id);
+            })->count(),
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *

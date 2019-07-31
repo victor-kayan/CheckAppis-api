@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\IntervencaoColmeia;
+use Illuminate\Http\Request;
+use App\Model\User;
 
 class IntervencaoColmeiaController extends Controller
 {
     private $intervencao;
 
-    public function __construct(IntervencaoColmeia $intervencao){
+    public function __construct(IntervencaoColmeia $intervencao)
+    {
         $this->$intervencao = $intervencao;
     }
     /**
@@ -23,23 +25,31 @@ class IntervencaoColmeiaController extends Controller
         //
     }
 
-    public function indexByIntervencao($intervencao_id){
-        $intervencoes = IntervencaoColmeia::where('intervencao_id', $intervencao_id)->where('is_concluido', false)->with('colmeia')->orderBy('created_at', 'ASC')->get();
+    public function indexByApiario($apiario_id)
+    {
+        $intervencoes = IntervencaoColmeia::whereHas('intervencao', function ($query) use ($apiario_id) {
+            $query->where('apiario_id', $apiario_id);
+        })->where('is_concluido', false)->with(['intervencao', 'colmeia'])->orderBy('created_at', 'DESC')->get();
+
+        foreach ($intervencoes as $intervencao) {
+            $intervencao->tecnico = User::find($intervencao->intervencao->tecnico_id);
+        }
 
         return response()->json([
             'message' => 'Lista de intervencaos',
-            'intervencoes' => $intervencoes
+            'intervencoes' => $intervencoes,
         ], 200);
     }
 
-    public function concluirIntervencao($intervencao_id){
+    public function concluirIntervencao($intervencao_id)
+    {
         $intervencao = IntervencaoColmeia::findOrFail($intervencao_id);
         $intervencao->is_concluido = true;
         $intervencao->save();
 
         return response()->json([
             'message' => 'Itervencao concluida',
-            'intervencao' => $intervencao
+            'intervencao' => $intervencao,
         ], 200);
     }
 

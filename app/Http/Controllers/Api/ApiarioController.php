@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Apiario;
 use App\Model\Colmeia;
 use App\Model\Endereco;
 use App\Model\Cidade;
+use Illuminate\Http\Request;
 
 class ApiarioController extends Controller
 {
@@ -16,7 +16,14 @@ class ApiarioController extends Controller
     public function __construct(Apiario $apiario)
     {
         $this->apiario = $apiario;
-        $this->middleware('role:tecnico', ['except' => ['apiariosUserLogado']]);
+        $this->middleware('role:tecnico', ['except' => ['apiariosUserLogado', 'getApiariosWithColmeiasWithIntervencoes', 'countApairosByUser']]);
+    }
+
+    public function countApairosByUser()
+    {
+        return response()->json([
+            'count_apiarios' => Apiario::where('user_id', auth()->user()->id)->count(),
+        ]);
     }
 
     public function index()
@@ -34,6 +41,20 @@ class ApiarioController extends Controller
             'message' => 'Lista de apiarios',
             'apiarios' => $this->apiario,
         ], 200, [], JSON_NUMERIC_CHECK);
+    }
+
+    public function getApiariosWithColmeiasWithIntervencoes()
+    {
+        $apiarios = Apiario::whereHas('colmeias', function ($query) {
+            $query->whereHas('intervencaoColmeias', function ($query2) {
+                $query2->where('is_concluido', false);
+            });
+        })->where('user_id', auth()->user()->id)->get();
+
+        return response()->json([
+            'message' => 'Lista de apiarios',
+            'apiarios' => $apiarios,
+        ]);
     }
 
     public function apiariosUserLogado()
