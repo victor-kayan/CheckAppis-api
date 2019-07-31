@@ -29,12 +29,12 @@ class IntervencaoController extends Controller
     {
         $id = auth()->user()->id;
         $countIntervencoes = Intervencao::whereHas('apiario', function ($query) use ($id) {
-            $query->where('user_id', $id);
+            $query->where('apicultor_id', $id);
         })->where('is_concluido', false)->count();
 
         $countIntervencoesColmeias = IntervencaoColmeia::whereHas('intervencao', function ($query) use ($id) {
             $query->whereHas('apiario', function ($query2) use ($id) {
-                $query2->where('user_id', $id);
+                $query2->where('apicultor_id', $id);
             });
         })->where('is_concluido', false)->count();
 
@@ -46,7 +46,7 @@ class IntervencaoController extends Controller
     public function indexByUserLogged()
     {
         $intervencoes = Intervencao::whereHas('apiario', function ($query) {
-            $query->where('user_id', auth()->user()->id);
+            $query->where('apicultor_id', auth()->user()->id);
         })->where('is_concluido', false)->with('apiario')->orderBy('created_at', 'DESC')->get();
 
         foreach ($intervencoes as $intervencao) {

@@ -22,7 +22,7 @@ class ColmeiaController extends Controller
 
         return response()->json([
             'count_colmeias' => Colmeia::whereHas('apiario', function ($query) use ($id) {
-                $query->where('user_id', $id);
+                $query->where('apicultor_id', $id);
             })->count(),
         ]);
     }

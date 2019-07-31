@@ -22,7 +22,7 @@ class ApiarioController extends Controller
     public function countApairosByUser()
     {
         return response()->json([
-            'count_apiarios' => Apiario::where('user_id', auth()->user()->id)->count(),
+            'count_apiarios' => Apiario::where('apicultor_id', auth()->user()->id)->count(),
         ]);
     }
 
@@ -49,7 +49,7 @@ class ApiarioController extends Controller
             $query->whereHas('intervencaoColmeias', function ($query2) {
                 $query2->where('is_concluido', false);
             });
-        })->where('user_id', auth()->user()->id)->get();
+        })->where('apicultor_id', auth()->user()->id)->get();
 
         return response()->json([
             'message' => 'Lista de apiarios',
@@ -59,7 +59,7 @@ class ApiarioController extends Controller
 
     public function apiariosUserLogado()
     {
-        $this->apiario = $this->apiario->where('user_id', auth()->user()->id)->with('colmeias')->get();
+        $this->apiario = $this->apiario->where('apicultor_id', auth()->user()->id)->with('colmeias')->get();
 
         return response()->json([
             'message' => 'Lista de apiarios',
@@ -133,7 +133,7 @@ class ApiarioController extends Controller
         $request->validate([
             'nome' => 'required|string',
             'endereco' => 'required|string',
-            'user_id' => 'required|exists:users,id',
+            'apicultor_id' => 'required|exists:users,id',
             'latitude' => 'required',
             'longitude' => 'required',
         ]);
