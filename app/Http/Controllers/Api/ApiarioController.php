@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Model\Endereco;
 use App\Model\Apiario;
 use App\Model\Colmeia;
-use App\Model\Endereco;
 use App\Model\Cidade;
-use Illuminate\Http\Request;
 
 class ApiarioController extends Controller
 {
@@ -22,7 +22,7 @@ class ApiarioController extends Controller
     public function countApairosByUser()
     {
         return response()->json([
-            'count_apiarios' => Apiario::where('user_id', auth()->user()->id)->count(),
+            'count_apiarios' => Apiario::where('apicultor_id', auth()->user()->id)->count(),
         ]);
     }
 
@@ -49,7 +49,7 @@ class ApiarioController extends Controller
             $query->whereHas('intervencaoColmeias', function ($query2) {
                 $query2->where('is_concluido', false);
             });
-        })->where('user_id', auth()->user()->id)->get();
+        })->where('apicultor_id', auth()->user()->id)->get();
 
         return response()->json([
             'message' => 'Lista de apiarios',
@@ -59,7 +59,7 @@ class ApiarioController extends Controller
 
     public function apiariosUserLogado()
     {
-        $this->apiario = $this->apiario->where('user_id', auth()->user()->id)->with('colmeias')->get();
+        $this->apiario = $this->apiario->where('apicultor_id', auth()->user()->id)->with('colmeias')->get();
 
         return response()->json([
             'message' => 'Lista de apiarios',
@@ -152,6 +152,9 @@ class ApiarioController extends Controller
             'nome' => 'required|string',
             'logradouro' => 'required|string',
             'apicultor_id' => 'required',
+            'endereco' => 'required|string',
+            'latitude' => 'required',
+            'longitude' => 'required',
         ]);
 
         $this->apiario = $this->apiario->where('id', $id)->with('endereco')->first();
