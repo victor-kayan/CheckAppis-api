@@ -28,8 +28,8 @@ class Handler extends ExceptionHandler
 
         $error = [
              'success' => false,
-             //'message' => 'Erro ao executar esta operação, entre em contato com o administrador do sistema',
-             'message' => $exception->getMessage(),
+            //  'message' => 'Erro ao executar esta operação, entre em contato com o administrador do sistema',
+            'message' => $exception->getMessage(),
          ];
 
         if ($exception instanceof ValidationException) {
@@ -43,6 +43,11 @@ class Handler extends ExceptionHandler
             $error['message'] = 'Não autenticado';
             $error['reconnect'] = true;
             $statusCode = 401;
+        }
+
+        if ($this->isHttpException($exception)) {
+            $statusCode = $exception->getStatusCode();
+            $error['message'] = $exception->getMessage();
         }
 
         return parent::render($request, $exception);

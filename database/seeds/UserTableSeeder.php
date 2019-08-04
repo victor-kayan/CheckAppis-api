@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Model\User;
-use App\Model\Role;
 use App\Model\Endereco;
+use App\Model\Role;
+use App\Model\User;
 
 class UserTableSeeder extends Seeder
 {
@@ -15,6 +15,21 @@ class UserTableSeeder extends Seeder
         $endereco = Endereco::create([
             'cidade_id' => 3787,
             'logradouro' => 'Sitio Belo Monte',
+        ]);
+
+        $endereco1 = Endereco::create([
+            'cidade_id' => 3789,
+            'logradouro' => 'Francisco Rodrigues',
+        ]);
+
+        $endereco2 = Endereco::create([
+            'cidade_id' => 2896,
+            'logradouro' => 'Mariano Suassuna',
+        ]);
+
+        $endereco3 = Endereco::create([
+            'cidade_id' => 3756,
+            'logradouro' => 'Maria José',
         ]);
 
         $apicultor1 = new User();
@@ -33,7 +48,7 @@ class UserTableSeeder extends Seeder
         $apicultor2->email = 'rodrigo@gmail.com';
         $apicultor2->password = bcrypt('123456');
         $apicultor2->tecnico_id = '4';
-        $apicultor2->endereco_id = $endereco->id;
+        $apicultor2->endereco_id = $endereco1->id;
         $apicultor2->telefone = '(86) 99996-5566';
         $apicultor2->foto = 'https://s3-sa-east-1.amazonaws.com/beecheck/images/apicultor-default.jpg';
         $apicultor2->save();
@@ -44,7 +59,7 @@ class UserTableSeeder extends Seeder
         $apicultor3->email = 'mario@gmail.com';
         $apicultor3->password = bcrypt('123456');
         $apicultor3->tecnico_id = '4';
-        $apicultor3->endereco_id = $endereco->id;
+        $apicultor3->endereco_id = $endereco2->id;
         $apicultor3->telefone = '(82) 99996-5566';
         $apicultor3->foto = 'https://s3-sa-east-1.amazonaws.com/beecheck/images/apicultor-default.jpg';
         $apicultor3->save();
@@ -56,7 +71,7 @@ class UserTableSeeder extends Seeder
         $tecnico->password = bcrypt('123456');
         $tecnico->foto = 'https://s3-sa-east-1.amazonaws.com/beecheck/images/apicultor-default.jpg';
         $tecnico->telefone = '(84) 99996-5566';
-        $tecnico->endereco_id = $endereco->id;
+        $tecnico->endereco_id = $endereco3->id;
         $tecnico->save();
         $tecnico->roles()->attach($role_tecnico);
     }

@@ -50,8 +50,8 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
     Route::get('apiario/{apiario_id}/visitas', 'VisitaController@visitasByApiario');
 
     Route::get('tecnico/perfil', 'UserController@getPerfil');
-
     Route::get('apicultores', 'UserController@getAllApicultores');
+    Route::put('tecnico/perfil', 'UserController@updatePerfil');
 
     Route::get('apicultor/apiarios/intervencoes', 'IntervencaoController@indexByUserLogged');
     Route::get('intervencao/{intervencao_id}/concluir', 'IntervencaoController@concluirIntervencao');
@@ -61,4 +61,9 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
     Route::get('apicultor/apiarios/count', 'ApiarioController@countApairosByUser');
     Route::get('apicultor/colmeias/count', 'ColmeiaController@countColmeiasByUser');
     Route::get('apicultor/intervencoes/count', 'IntervencaoController@countIntervencoesByUser');
+});
+
+Route::namespace('Api')->group(function () {
+    Route::get('tecnico/apiarios/relatorios', 'RelatorioController@gerarRelatorioApiario');
+    Route::get('tecnico/visitas/relatorios', 'RelatorioController@gerarRelatorioVisitas');
 });

@@ -146,5 +146,6 @@ return [
         'cep' => 'CEP',
         'message' => 'mensagem',
         'password' => 'senha',
+        'name' => 'nome',
     ],
 ];

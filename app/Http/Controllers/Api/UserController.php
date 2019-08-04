@@ -8,6 +8,7 @@ use App\Model\User;
 use App\Model\Apiario;
 use App\Model\Colmeia;
 use App\Model\Endereco;
+use App\Model\Cidade;
 
 class UserController extends Controller
 {
@@ -53,11 +54,36 @@ class UserController extends Controller
         }
     }
 
-    public function updatePerfil(Request $request, $id)
+    public function updatePerfil(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
+            'name' => 'required|min:5|max:50',
+            'email' => 'required|email|unique:users,email,'.auth()->user()->id.'|max:100',
+            'password' => 'confirmed',
+            'telefone' => 'min:15',
+        ]);
+
+        if ($request->password != null) {
+            $request->validate([
+                'password' => 'min:6|max:20',
+            ]);
+            $this->user = $this->user->where('id', auth()->user()->id)->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+                'telefone' => $request->telefone,
+            ]);
+        } else {
+            $this->user = $this->user->where('id', auth()->user()->id)->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'telefone' => $request->telefone,
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Usuário alterado com sucesso',
+            'user' => $this->user,
         ]);
     }
 
@@ -71,15 +97,23 @@ class UserController extends Controller
             'password' => 'required|confirmed|min:6|max:30',
             'email' => 'required|email',
             'telefone' => 'required',
-            'cidade_id' => 'required|integer|exists:cidades,id',
             'logradouro' => 'required|max:100',
         ]);
 
         \DB::transaction(function () use ($request) {
-            Endereco::where('id', $this->user->endereco->id)->updateOrCreate([
-                'cidade_id' => $request->cidade_id,
-                'logradouro' => $request->logradouro,
-            ]);
+            if (is_string($request->cidade_id)) {
+                $cidade = Cidade::where(['nome' => $request->cidade_id, 'uf' => $request->estado])->first();
+
+                Endereco::where('id', $this->user->endereco->id)->update([
+                    'cidade_id' => $cidade->id,
+                    'logradouro' => $request->logradouro,
+                ]);
+            } else {
+                Endereco::where('id', $this->user->endereco->id)->update([
+                    'cidade_id' => $request->cidade_id,
+                    'logradouro' => $request->logradouro,
+                ]);
+            }
 
             $this->user->update([
                 'name' => $request->name,

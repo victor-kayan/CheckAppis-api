@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Api\EnderecoController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Model\User;
-use App\Model\Role;
-use Socialite;
 use App\Model\Endereco;
+use App\Model\Role;
+use App\Model\User;
+use Socialite;
+use App\Model\TokenRelatorios;
 
 class AutenticadorControlador extends Controller
 {
@@ -91,12 +92,16 @@ class AutenticadorControlador extends Controller
         }
 
         $user = $request->user();
-
         $token = $user->createToken('Token de acesso')->accessToken;
         $request->user()->authorizeRoles(['tecnico']);
 
+        $token_relatorio = TokenRelatorios::create([
+            'token_relatorios' => str_random(20),
+        ]);
+
         return response()->json([
             'token' => $token,
+            'token_relatorios' => $token_relatorio->token_relatorios,
             'user' => $user,
         ], 200);
     }

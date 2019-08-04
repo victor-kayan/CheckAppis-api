@@ -28,7 +28,7 @@ class CreateApiariosTable extends Migration
             $table->unsignedInteger('endereco_id')->nullable(true);
             $table->foreign('endereco_id')
                     ->references('id')
-                    ->on('enderecos');
+                    ->on('enderecos')->onDelete('cascade');
 
             $table->softDeletes();
             $table->timestamps();
