@@ -8,8 +8,6 @@ class CreateVisitaColmeiasTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -31,8 +29,8 @@ class CreateVisitaColmeiasTable extends Migration
             $table->unsignedInteger('visita_apiario_id');
             $table->foreign('visita_apiario_id')
                 ->references('id')
-                ->on('visita_apiarios');
-                
+                ->on('visita_apiarios')->onDelete('cascade');
+
             $table->softDeletes();
             $table->timestamps();
         });
@@ -40,8 +38,6 @@ class CreateVisitaColmeiasTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

@@ -3,26 +3,24 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Model\Intervencao;
 use App\Model\IntervencaoColmeia;
-use App\Model\User;
 use Illuminate\Http\Request;
+use App\Model\Intervencao;
+use App\Model\User;
 
 class IntervencaoController extends Controller
 {
-
     public function __construct(Intervencao $intervencao)
     {
         $this->$intervencao = $intervencao;
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        $intervencao = Intervencao::where('tecnico_id', auth()->user()->id)
+            ->with('apiario')->orderBy('updated_at', 'DESC')->paginate(10);
+
+        return $intervencao;
     }
 
     public function countIntervencoesByUser()
@@ -62,64 +60,52 @@ class IntervencaoController extends Controller
     public function concluirIntervencao($intervencao_id)
     {
         Intervencao::findOrFail($intervencao_id)->update(['is_concluido' => true]);
+
         return response()->json([
             'message' => 'Itervencao concluida',
         ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
+        $request->validate([
+            'descricao' => 'required|string|max:200',
+            'data_inicio' => 'required|date|before_or_equal:data_fim',
+            'data_fim' => 'required|date',
+            'apiario_id' => 'required|exists:apiarios,id',
+        ]);
 
+        $intervencoes = Intervencao::create([
+            'descricao' => $request->descricao,
+            'data_inicio' => $request->data_inicio,
+            'data_fim' => $request->data_fim,
+            'tecnico_id' => auth()->user()->id,
+            'is_concluido' => false,
+            'apiario_id' => $request->apiario_id,
+        ]);
+
+        return response()->json([
+            'message' => 'Intervenção cadastrada com sucesso',
+            'data' => $intervencoes,
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        Intervencao::find($id)->delete();
+
+        return response()->json([], 204);
     }
 }

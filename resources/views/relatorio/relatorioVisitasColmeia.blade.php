@@ -1,48 +1,64 @@
 @extends('relatorio.layout')
-@section('titleHeader', 'Relatório de visitas')
+@section('titleHeader', 'Relatório de visitas nas colmeias')
 @section('content')
 <table>
     <thead>
         <tr>
-            <th class="desc">#</th>
             <th class="desc">Apiário</th>
+            <th class="desc">Colmeia</th>
             <th class="">Tem comida</th>
-            <th>Tem água</th>
-            <th>Data</th>
-            <th>Obs</th>
+            <th class="">Tem água</th>
+            <th class="">Tem postura</th>
+            <th class="">Qtd qua mel</th>
+            <th class="">Qtd qua polen</th>
+            <th class="">Qtd cria aberta</th>
+            <th class="">Qtd cria fechada</th>
+            <th class="">Postura</th>
+            <th class="">Data</th>
         </tr>
     </thead>
     <tbody>
-        @if (isset($visitas))
-        @foreach($visitas as $a)
-        <!-- <tr>
-            <td>{{$a->nome}}</td>
-            <td>
-                {{$a->qtd_colmeias}}
-            </td>
-            <td>{{$a->endereco->logradouro}}, {{$a->endereco->cidade->nome}} -
-                {{$a->endereco->cidade->uf}}</td>
-            <td>{{$a->created_at->format('d/m/Y')}}</td>
-            @if(isset($a->apicultor->name))
-            <td>{{$a->apicultor->name}}</td>
+        @if (count($visitas) > 0)
+        @foreach($visitas as $v)
+        <tr>
+            <td>{{$v->colmeia->apiario->nome}}</td>
+            <td>{{$v->colmeia->nome}}</td>
+
+            @if($v->tem_comida)
+            <td>Sim</td>
             @else
-            <td>-</td>
+            <td>Não</td>
             @endif
-        </tr> -->
+
+            @if($v->tem_agua)
+            <td>Sim</td>
+            @else
+            <td>Não</td>
+            @endif
+
+            @if($v->tem_abelhas_mortas)
+            <td>Sim</td>
+            @else
+            <td>Não</td>
+            @endif
+
+            <td>{{$v->qtd_quadros_mel}}</td>
+            <td>{{$v->qtd_quadros_polen}}</td>
+            <td>{{$v->qtd_cria_aberta }}</td>
+            <td>{{$v->qtd_cria_fechada }}</td>
+            <td>{{$v->tem_postura }}</td>
+            <td>{{$v->created_at->format('d-m-Y')}}</td>
+
+        </tr>
+
         @endforeach
-        <!-- <tr>
-            <td colspan="4" style="text-align:right">TOTAL DE COLMEIAS</td>
-            <td class="total" style="text-align:right">{{$total_colmeias}}</td>
-        </tr> -->
-        <!-- <tr>
-            <td colspan="4" class="grand total">
-                TOTAL DE APIÁRIOS
-            </td>
-            <td class="grand total">{{$total_apiarios}}</td>
-        </tr> -->
+        <tr>
+            <td colspan="10" style="text-align:right">TOTAL DE VISITAS</td>
+            <td class="total" style="text-align:right">{{$total_visitas}}</td>
+        </tr>
         @else
         <tr>
-            <td colspan="6" style="text-align:center;font-size:11pt;color: #5D6975" class="notice">Ainda não há
+            <td colspan="11" style="text-align:center;font-size:11pt;color: #5D6975" class="notice">Ainda não há
                 informações</td>
         </tr>
         @endif
@@ -51,10 +67,10 @@
 <div id="notices">
     <div id="observacao">Observações:</div>
     <div class="notice">
-        Qtd colmeias = Quantidade de colmeias dos apiários
+        Qua. (Quadros)
     </div>
     <div class="notice">
-        Apic respo. = Apicultor responsável pelo apiário
+        Qtd. (Quantidade)
     </div>
 </div>
 @endsection

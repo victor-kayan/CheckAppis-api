@@ -55,9 +55,8 @@
     h1 {
         border-top: 1px solid #C1CED9;
         border-bottom: 1px solid #C1CED9;
-        ;
         color: #5D6975;
-        font-size: 2.4em;
+        font-size: 2.0em;
         line-height: 1.4em;
         font-weight: normal;
         text-align: center;
@@ -114,17 +113,18 @@
         border-bottom: 1px solid #C1CED9;
         white-space: nowrap;
         font-weight: normal;
+        /* text-align: left; */
     }
 
     table .service,
     table {
-        text-align: left;
+        text-align: center;
         font-size: 9pt
     }
 
     table td {
         padding: 15px;
-        text-align: left;
+        text-align: center;
         font-size: 10pt
     }
 
@@ -157,7 +157,7 @@
     footer {
         color: #5D6975;
         width: 100%;
-        height: 30px;
+        height: 5px;
         position: absolute;
         bottom: 0;
         border-top: 1px solid #C1CED9;
@@ -177,6 +177,7 @@
     <main>
         @yield('content')
     </main>
+    <br />
     <footer>
         BeeCheck - Sistema de Gerenciamento de Colmeias e apiários.
     </footer>

@@ -6,11 +6,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateColmeiasTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('colmeias', function (Blueprint $table) {
@@ -18,23 +13,17 @@ class CreateColmeiasTable extends Migration
             $table->string('nome');
             $table->string('descricao');
             $table->string('foto')->nullable(true);
-            
+
             $table->unsignedInteger('apiario_id');
             $table->foreign('apiario_id')
                 ->references('id')
-                ->on('apiarios');
-                
+                ->on('apiarios')->onDelete('cascade');
+
             $table->softDeletes();
             $table->timestamps();
-
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('colmeias');

@@ -1,5 +1,5 @@
 @extends('relatorio.layout')
-@section('titleHeader', 'Relatório de apiários')
+@section('titleHeader', 'Relatório dos apiários')
 @section('content')
 <table>
     <thead>

@@ -3,33 +3,45 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use App\Model\VisitaApiario;
 use App\Model\VisitaColmeia;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class VisitaController extends Controller
 {
     private $visitaApiario;
+    private $visitaColmeia;
 
-    public function __construct(VisitaApiario $visitaApiario)
+    public function __construct(VisitaApiario $visitaApiario, VisitaColmeia $visitaColmeia)
     {
         $this->visitaApiario = $visitaApiario;
-        $this->middleware('role:apicultor');
+        $this->visitaColmeia = $visitaColmeia;
+        $this->middleware('role:apicultor', ['except' => ['indexVisitaApiarios', 'indexVisitaColmeias', 'destroyVisitaApiario']]);
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
 
+    public function indexVisitaApiarios()
+    {
+        $visitas = $this->visitaApiario->whereHas('apiario', function ($query) {
+            $query->where('tecnico_id', auth()->user()->id);
+        })->with('apiario')->paginate(10);
+
+        return $visitas;
+    }
+
+    public function indexVisitaColmeias()
+    {
+        $visitas = $this->visitaColmeia->whereHas('colmeia', function ($query) {
+            $query->whereHas('apiario', function ($query) {
+                $query->where('tecnico_id', auth()->user()->id);
+            });
+        })->with('colmeia.apiario')->paginate(10);
+
+        return $visitas;
     }
 
     public function visitasByApiario($apiario_id)
     {
-
         $visitas = $this->visitaApiario->where('apiario_id', $apiario_id)->orderBy('id', 'DESC')->with('visitaColmeias.colmeia')->get();
 
         foreach ($visitas as $visita) {
@@ -52,18 +64,6 @@ class VisitaController extends Controller
         ], 200, [], JSON_NUMERIC_CHECK);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -110,58 +110,22 @@ class VisitaController extends Controller
         ], 200, [], JSON_NUMERIC_CHECK);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-
-    public function teste(Request $r)
-    {
-        return $r;
-    }
-
     public function show($id)
     {
-        //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroyVisitaApiario($id)
     {
-        VisitaColmeia::where('visita_apiario_id', $id)->delete();
         $this->visitaApiario->findOrFail($id)->delete();
 
         return response()->json([], 204);
-
     }
 }

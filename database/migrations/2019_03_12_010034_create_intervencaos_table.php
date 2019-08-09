@@ -8,8 +8,6 @@ class CreateIntervencaosTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -19,7 +17,7 @@ class CreateIntervencaosTable extends Migration
             $table->date('data_inicio');
             $table->date('data_fim');
             $table->boolean('is_concluido');
-            
+
             $table->unsignedInteger('tecnico_id');
             $table->foreign('tecnico_id')
                 ->references('id')
@@ -28,7 +26,7 @@ class CreateIntervencaosTable extends Migration
             $table->unsignedInteger('apiario_id');
             $table->foreign('apiario_id')
                 ->references('id')
-                ->on('apiarios');
+                ->on('apiarios')->onDelete('cascade');
 
             $table->softDeletes();
             $table->timestamps();
@@ -37,8 +35,6 @@ class CreateIntervencaosTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

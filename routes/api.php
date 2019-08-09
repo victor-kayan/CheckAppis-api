@@ -1,15 +1,5 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
- */
 Route::options('{all}', function () {
     return response('ok', 200)
         ->header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE')
@@ -47,7 +37,13 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
     Route::get('apicultor/apiarios', 'ApiarioController@apiariosUserLogado');
     Route::get('apicultor/colmeiaswithintervencoes/apiarios', 'ApiarioController@getApiariosWithColmeiasWithIntervencoes');
     Route::get('apiario/{apiario_id}/colmeias', 'ColmeiaController@colmeiasApiario');
+    Route::get('apiario/colmeias/{apiario_id}', 'ColmeiaController@colmeiasApiario');
+    Route::get('colmeias-por-apiario/{apiario_id}', 'ColmeiaController@colmeiasByApiario');
     Route::get('apiario/{apiario_id}/visitas', 'VisitaController@visitasByApiario');
+    Route::delete('apiario/visitas/{visita_id}', 'VisitaController@destroyVisitaApiario');
+
+    Route::get('apiarios/visitas', 'VisitaController@indexVisitaApiarios');
+    Route::get('apiarios/visitas-colmeias', 'VisitaController@indexVisitaColmeias');
 
     Route::get('tecnico/perfil', 'UserController@getPerfil');
     Route::get('apicultores', 'UserController@getAllApicultores');
@@ -66,4 +62,5 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
 Route::namespace('Api')->group(function () {
     Route::get('tecnico/apiarios/relatorios', 'RelatorioController@gerarRelatorioApiario');
     Route::get('tecnico/visitas/relatorios', 'RelatorioController@gerarRelatorioVisitas');
+    Route::get('tecnico/intervencoes/relatorios', 'RelatorioController@gerarRelatorioIntervencoes');
 });

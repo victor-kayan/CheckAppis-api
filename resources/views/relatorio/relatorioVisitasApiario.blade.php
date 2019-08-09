@@ -18,23 +18,35 @@
         <tr>
             <td>{{$v->id}}</td>
             <td>{{$v->apiario->nome}}</td>
-            <td>{{$v->tem_sombra}}</td>
-            <td>{{$v->tem_comida}}</td>
-            <td>{{$v->tem_agua}}</td>
+
+            @if($v->tem_sombra)
+            <td>Sim</td>
+            @else
+            <td>Não</td>
+            @endif
+
+            @if($v->tem_comida)
+            <td>Sim</td>
+            @else
+            <td>Não</td>
+            @endif
+
+            @if($v->tem_agua)
+            <td>Sim</td>
+            @else
+            <td>Não</td>
+            @endif
+
             <td>{{$v->created_at->format('d-m-Y')}}</td>
         </tr>
         @endforeach
-        <!-- <tr>
-            <td colspan="4" style="text-align:right">TOTAL DE COLMEIAS</td>
-            <td class="total" style="text-align:right"></td>
-        </tr> -->
-        <!-- <tr>
-            <td colspan="4" class="grand total">
-                TOTAL DE APIÁRIOS
+        <tr>
+            <td colspan="5" class="grand total">
+                TOTAL DE VISITAS
             </td>
-            <td class="grand total"></td>
-        </tr> -->
-        @else
+            <td class="grand total">{{$total_visitas}}</td>
+            </<tr>
+            @else
         <tr>
             <td colspan="6" style="text-align:center;font-size:11pt;color: #5D6975" class="notice">Ainda não há
                 informações</td>
@@ -45,10 +57,7 @@
 <div id="notices">
     <div id="observacao">Observações:</div>
     <div class="notice">
-        Qtd colmeias = Quantidade de colmeias dos apiários
-    </div>
-    <div class="notice">
-        Apic respo. = Apicultor responsável pelo apiário
+        Sem
     </div>
 </div>
 @endsection

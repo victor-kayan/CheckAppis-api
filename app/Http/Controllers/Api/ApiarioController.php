@@ -152,9 +152,6 @@ class ApiarioController extends Controller
             'nome' => 'required|string',
             'logradouro' => 'required|string',
             'apicultor_id' => 'required',
-            'endereco' => 'required|string',
-            'latitude' => 'required',
-            'longitude' => 'required',
         ]);
 
         $this->apiario = $this->apiario->where('id', $id)->with('endereco')->first();

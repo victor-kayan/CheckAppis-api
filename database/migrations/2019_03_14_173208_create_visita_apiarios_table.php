@@ -6,11 +6,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateVisitaApiariosTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('visita_apiarios', function (Blueprint $table) {
@@ -23,17 +18,13 @@ class CreateVisitaApiariosTable extends Migration
             $table->unsignedInteger('apiario_id');
             $table->foreign('apiario_id')
                 ->references('id')
-                ->on('apiarios');
+                ->on('apiarios')->onDelete('cascade');
+
             $table->softDeletes();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('visita_apiarios');

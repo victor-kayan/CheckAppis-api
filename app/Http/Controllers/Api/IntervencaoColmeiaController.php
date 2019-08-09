@@ -15,14 +15,16 @@ class IntervencaoColmeiaController extends Controller
     {
         $this->$intervencao = $intervencao;
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        $intervencoes = IntervencaoColmeia::whereHas('colmeia', function ($query) {
+            $query->whereHas('apiario', function ($query2) {
+                $query2->where('tecnico_id', auth()->user()->id);
+            });
+        })->with('colmeia.apiario')->orderBy('created_at', 'DESC')->paginate(10);
+
+        return $intervencoes;
     }
 
     public function indexByApiario($apiario_id)
@@ -53,69 +55,48 @@ class IntervencaoColmeiaController extends Controller
         ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'descricao' => 'required|string|max:200',
+            'data_inicio' => 'required|date|before_or_equal:data_fim',
+            'data_fim' => 'required|date',
+            'colmeia_id' => 'required|exists:colmeias,id',
+        ]);
+
+        $intervencao = IntervencaoColmeia::create([
+            'descricao' => $request->descricao,
+            'data_inicio' => $request->data_inicio,
+            'data_fim' => $request->data_fim,
+            'colmeia_id' => $request->colmeia_id,
+        ]);
+
+        return response()->json([
+            'message' => 'Intervenção cadastrada com sucesso',
+            'data' => $intervencao,
+        ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+        IntervencaoColmeia::find($id)->delete();
+
+        return response()->json([], 204);
     }
 }

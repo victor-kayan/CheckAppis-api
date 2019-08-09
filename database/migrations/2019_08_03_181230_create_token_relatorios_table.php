@@ -11,6 +11,7 @@ class CreateTokenRelatoriosTable extends Migration
         Schema::create('token_relatorios', function (Blueprint $table) {
             $table->increments('id');
             $table->string('token_relatorios');
+            $table->string('tecnico_id');
             $table->timestamps();
         });
     }

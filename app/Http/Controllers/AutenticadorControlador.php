@@ -97,6 +97,7 @@ class AutenticadorControlador extends Controller
 
         $token_relatorio = TokenRelatorios::create([
             'token_relatorios' => str_random(20),
+            'tecnico_id' => $user->id,
         ]);
 
         return response()->json([
@@ -131,11 +132,17 @@ class AutenticadorControlador extends Controller
             $user_db->roles()->attach($role_tecnico);
         }
 
+        $token_relatorio = TokenRelatorios::create([
+            'token_relatorios' => str_random(20),
+            'tecnico_id' => $user->id,
+        ]);
+
         $token = $user_db->createToken('Token de acesso')->accessToken;
 
         return response()->json([
             'token' => $token,
             'user' => $user_db,
+            'token_relatorios' => $token_relatorio->token_relatorios,
         ], 200);
     }
 

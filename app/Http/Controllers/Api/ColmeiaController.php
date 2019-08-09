@@ -13,7 +13,7 @@ class ColmeiaController extends Controller
     public function __construct(Colmeia $colmeia)
     {
         $this->colmeia = $colmeia;
-        $this->middleware('role:apicultor');
+        // $this->middleware(['role:apicultor', 'role:tecnico']);
     }
 
     public function countColmeiasByUser()
@@ -27,11 +27,6 @@ class ColmeiaController extends Controller
         ]);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $url = 'https://s3.'.env('AWS_DEFAULT_REGION').'.amazonaws.com/'.env('AWS_BUCKET').'/';
@@ -57,13 +52,16 @@ class ColmeiaController extends Controller
         ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function colmeiasByApiario($id)
+    {
+        $colmeias = Colmeia::where('apiario_id', $id)->get();
+
+        return response()->json([
+            'message' => 'Lista de colmeias do apiario ',
+            'colmeias' => $colmeias,
+        ], 200);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
