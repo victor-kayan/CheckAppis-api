@@ -36,6 +36,25 @@ services:
       - "80:8080"
     links:
       - postgres
+  
+  # Frontend Machines
+  bee_web:
+    build: bee_web/
+    container_name: bee_web
+    ports:
+      - "3000:80"
+    restart: always    
+    depends_on:
+      - web
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
 
 # volumes declaration.
 volumes:
