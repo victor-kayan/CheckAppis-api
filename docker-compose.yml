@@ -38,9 +38,9 @@ services:
       - postgres
   
   # Frontend Machines
-  bee_web:
-    build: bee_web/
-    container_name: bee_web
+  bee:
+    build: bee/
+    container_name: bee
     ports:
       - "3000:80"
     restart: always    

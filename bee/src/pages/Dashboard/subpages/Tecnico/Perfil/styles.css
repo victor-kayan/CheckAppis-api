@@ -1,0 +1,42 @@
+.editarDadosPessoais {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    background-image: url('../../../../../images/banner.png');
+    background-size: cover;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    min-height: 360;
+    margin-top: 10px;
+    padding: 15;
+}
+
+.editarDadosPessoais h3 {
+    color: #fff;
+    margin-top: 3vh;
+    font-size: 3vh;
+}
+
+.fotoPerfilEditar {
+    width: 12vh;
+    height: 12vh;
+    border-radius: 30vh;
+    margin-top: 1vh;
+}
+
+.buttonsAction {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    float: right;
+    margin-bottom: 2vh;
+    margin-top: 2vh;
+}
+
+@media (max-width: 580px) {
+    .formStyle{
+        flex-direction: column !important;
+        display: flex !important;
+    }
+}

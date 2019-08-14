@@ -1,0 +1,41 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    background: #fff;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../../images/banner2.jpg');
+    background-repeat: no-repeat;
+    background-size: 100vw 100vh;
+    overflow: auto;
+    text-align: center;
+}
+
+.box {
+    width: 25vw;
+    height: auto;
+    min-width: 20vw !important;
+    min-width: 300px !important;
+    background: #FAF7F7;
+    padding: 40px;
+    border-radius: 5px;
+    border-bottom: px solid #ebedf0;
+    /* filter:alpha(opacity=50); */
+    /* -webkit-opacity:0.9; */
+    color: black;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 25pt;
+    margin-top: 20px;
+}
+.button {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.logo {
+    max-width: 80px;
+    margin: 10px
+}
+

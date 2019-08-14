@@ -1,0 +1,3 @@
+export const GET_PERFIL = "GET_PERFIL";
+export const UPDATE_PERFIL = "UPDATE_PERFIL";
+export const LOADING_PERFIL = "LOADING_PERFIL";
