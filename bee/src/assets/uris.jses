@@ -1,4 +1,4 @@
-const uris = {
+esconst uris = {
   DOMINIO: "http://35.247.237.230",
   BASE_URL: "http://35.247.237.230/api/",
 
