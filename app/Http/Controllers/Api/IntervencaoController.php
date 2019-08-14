@@ -30,7 +30,7 @@ class IntervencaoController extends Controller
             $query->where('apicultor_id', $id);
         })->where('is_concluido', false)->count();
 
-        $countIntervencoesColmeias = IntervencaoColmeia::whereHas('intervencao', function ($query) use ($id) {
+        $countIntervencoesColmeias = IntervencaoColmeia::whereHas('colmeia', function ($query) use ($id) {
             $query->whereHas('apiario', function ($query2) use ($id) {
                 $query2->where('apicultor_id', $id);
             });

@@ -38,14 +38,14 @@ services:
       - postgres
   
   # Frontend Machines
-  bee:
-    build: bee/
-    container_name: bee
-    ports:
-      - "3000:80"
-    restart: always    
-    depends_on:
-      - web
+  # bee:
+  #   build: bee/
+  #   container_name: bee
+  #   ports:
+  #     - "3000:80"
+  #   restart: always    
+  #   depends_on:
+  #     - web
 
 # volumes declaration.
 volumes:

@@ -29,12 +29,12 @@ class IntervencaoColmeiaController extends Controller
 
     public function indexByApiario($apiario_id)
     {
-        $intervencoes = IntervencaoColmeia::whereHas('intervencao', function ($query) use ($apiario_id) {
+        $intervencoes = IntervencaoColmeia::whereHas('colmeia', function ($query) use ($apiario_id) {
             $query->where('apiario_id', $apiario_id);
-        })->where('is_concluido', false)->with(['intervencao', 'colmeia'])->orderBy('created_at', 'DESC')->get();
+        })->where('is_concluido', false)->with('colmeia.apiario')->orderBy('created_at', 'DESC')->get();
 
         foreach ($intervencoes as $intervencao) {
-            $intervencao->tecnico = User::find($intervencao->intervencao->tecnico_id);
+            $intervencao->tecnico = User::find($intervencao->colmeia->apiario->tecnico_id);
         }
 
         return response()->json([
