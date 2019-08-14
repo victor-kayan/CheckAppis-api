@@ -1,0 +1,2 @@
+export const GET_ALL_INFO_HOME = "GET_ALL_INFO_HOME";
+export const LOADING_HOME = "LOADING_HOME";

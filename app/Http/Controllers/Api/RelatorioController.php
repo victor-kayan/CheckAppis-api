@@ -149,8 +149,8 @@ class RelatorioController extends Controller
             }
 
             $pdf = \PDF::loadView('relatorio.relatorioApiario',
-            compact('tecnico', 'apiarios', 'total_colmeias', 'total_apiarios'))
-            ->setPaper('a4', $request->orientacao_papel);
+            compact('apiarios', 'total_colmeias', 'total_apiarios'))
+                ->setPaper('a4', $request->orientacao_papel);
 
             return $this->responseRelatorio($request->acao, $pdf);
         }
