@@ -98,8 +98,6 @@ class RelatorioController extends Controller
             })->where('is_concluido', $situacao)->with('colmeia.apiario')->orderBy('created_at', 'DESC')->get();
         }
 
-        abort(422, $situacao);
-
         $intervencoes = $this->formatData($intervencoes);
 
         return $intervencoes;
