@@ -3,9 +3,9 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\AuthenticationException;
 
 class Handler extends ExceptionHandler
 {
@@ -27,10 +27,10 @@ class Handler extends ExceptionHandler
         $statusCode = 500;
 
         $error = [
-             'success' => false,
-            //  'message' => 'Erro ao executar esta operação, entre em contato com o administrador do sistema',
-            'message' => $exception->getMessage(),
-         ];
+            'success' => false,
+            'message' => 'Erro ao executar esta operação, entre em contato com o administrador do sistema',
+            // 'message' => $exception->getMessage(),
+        ];
 
         if ($exception instanceof ValidationException) {
             $error['message'] = $exception->validator->getMessageBag()->first();
@@ -48,9 +48,13 @@ class Handler extends ExceptionHandler
         if ($this->isHttpException($exception)) {
             $statusCode = $exception->getStatusCode();
             $error['message'] = $exception->getMessage();
+
+            if ($statusCode == 404) {
+                return response()->view('errors.404', [], 404);
+            }
         }
 
-        return parent::render($request, $exception);
+        // return parent::render($request, $exception);
 
         return response()->json($error, $statusCode);
     }

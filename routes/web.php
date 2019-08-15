@@ -15,6 +15,10 @@ Route::get('/', function () {
     return redirect('/index.html');
 });
 
-Auth::routes();
+Route::get('/login', function () {
+    return redirect('/index.html');
+});
+
+// Auth::routes();
 
 // Route::get('/home', 'HomeController@index')->name('home');
