@@ -73,7 +73,7 @@ class RelatorioController extends Controller
         } else {
             $intervencoes = Intervencao::whereHas('apiario', function ($query) use ($tecnico_id) {
                 $query->where('tecnico_id', $tecnico_id);
-            })->where('is_concluido', true)->with('apiario')->orderBy('created_at', 'DESC')->get();
+            })->where('is_concluido', $situacao)->with('apiario')->orderBy('created_at', 'DESC')->get();
         }
 
         $intervencoes = $this->formatData($intervencoes);
@@ -83,11 +83,20 @@ class RelatorioController extends Controller
 
     public function indexIntervencaoColmeias($tecnico_id, $situacao)
     {
-        $intervencoes = IntervencaoColmeia::whereHas('colmeia', function ($query) use ($tecnico_id) {
-            $query->whereHas('apiario', function ($query2) use ($tecnico_id) {
-                $query2->where('tecnico_id', $tecnico_id);
-            });
-        })->with('colmeia.apiario')->orderBy('created_at', 'DESC')->get();
+        $intervencoes = null;
+        if ($situacao == null) {
+            $intervencoes = IntervencaoColmeia::whereHas('colmeia', function ($query) use ($tecnico_id) {
+                $query->whereHas('apiario', function ($query2) use ($tecnico_id) {
+                    $query2->where('tecnico_id', $tecnico_id);
+                });
+            })->with('colmeia.apiario')->orderBy('created_at', 'DESC')->get();
+        }else {
+            $intervencoes = IntervencaoColmeia::whereHas('colmeia', function ($query) use ($tecnico_id) {
+                $query->whereHas('apiario', function ($query2) use ($tecnico_id) {
+                    $query2->where('tecnico_id', $tecnico_id);
+                });
+            })->where('is_concluido', $situacao)->with('colmeia.apiario')->orderBy('created_at', 'DESC')->get();
+        }
 
         $intervencoes = $this->formatData($intervencoes);
 
