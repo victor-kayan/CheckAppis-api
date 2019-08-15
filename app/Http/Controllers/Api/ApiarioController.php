@@ -101,7 +101,7 @@ class ApiarioController extends Controller
     {
         $request->validate([
             'nome' => 'required|string',
-            'descricao' => 'required|string|max:50',
+            'descricao' => 'required|string|max:100',
             'latitude' => 'required',
             'longitude' => 'required',
             'apicultor_id' => 'required|exists:users,id',
