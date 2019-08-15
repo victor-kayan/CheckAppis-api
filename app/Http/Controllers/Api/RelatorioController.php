@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Model\IntervencaoColmeia;
-use App\Model\TokenRelatorios;
-use Illuminate\Http\Request;
-use App\Model\VisitaApiario;
-use App\Model\VisitaColmeia;
-use App\Model\Intervencao;
 use App\Model\Apiario;
 use App\Model\Colmeia;
+use App\Model\Intervencao;
+use App\Model\IntervencaoColmeia;
+use App\Model\TokenRelatorios;
+use App\Model\VisitaApiario;
+use App\Model\VisitaColmeia;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class RelatorioController extends Controller
 {
@@ -31,7 +31,7 @@ class RelatorioController extends Controller
 
     public function responseRelatorio($acao, $pdf)
     {
-        return  ($acao == 'visualizar') ? $pdf->stream() : $pdf->download();
+        return ($acao == 'visualizar') ? $pdf->stream() : $pdf->download();
     }
 
     public function indexVisitasApiarios($tecnico_id)
@@ -57,16 +57,17 @@ class RelatorioController extends Controller
     public function indexApiarios($tecnico_id)
     {
         $apiarios = Apiario::where('tecnico_id', $tecnico_id)
-                ->with(['endereco.cidade', 'apicultor', 'tecnico'])
-                ->orderBy('updated_at', 'DESC')->get();
+            ->with(['endereco.cidade', 'apicultor', 'tecnico'])
+            ->orderBy('updated_at', 'DESC')->get();
 
         return $apiarios;
     }
 
     public function indexIntervencaoApiarios($tecnico_id, $situacao)
     {
+        
         $intervencoes = null;
-        if ($situacao == null) {
+        if ($situacao === null) {
             $intervencoes = Intervencao::whereHas('apiario', function ($query) use ($tecnico_id) {
                 $query->where('tecnico_id', $tecnico_id);
             })->with('apiario')->orderBy('created_at', 'DESC')->get();
@@ -84,13 +85,13 @@ class RelatorioController extends Controller
     public function indexIntervencaoColmeias($tecnico_id, $situacao)
     {
         $intervencoes = null;
-        if ($situacao == null) {
+        if ($situacao === null) {
             $intervencoes = IntervencaoColmeia::whereHas('colmeia', function ($query) use ($tecnico_id) {
                 $query->whereHas('apiario', function ($query2) use ($tecnico_id) {
                     $query2->where('tecnico_id', $tecnico_id);
                 });
             })->with('colmeia.apiario')->orderBy('created_at', 'DESC')->get();
-        }else {
+        } else {
             $intervencoes = IntervencaoColmeia::whereHas('colmeia', function ($query) use ($tecnico_id) {
                 $query->whereHas('apiario', function ($query2) use ($tecnico_id) {
                     $query2->where('tecnico_id', $tecnico_id);
@@ -128,7 +129,7 @@ class RelatorioController extends Controller
                         compact('visitas', 'total_visitas'))->setPaper('a4', $request->orientacao_papel);
 
                     return $this->responseRelatorio($request->acao, $pdf);
-                break;
+                    break;
                 case 'colmeia':
                     $visitas = $this->indexVisitasColmeias($request->tecnico_id);
                     $total_visitas = count($visitas);
@@ -137,7 +138,7 @@ class RelatorioController extends Controller
                         compact('visitas', 'total_visitas'))->setPaper('a4', 'landscape');
 
                     return $this->responseRelatorio($request->acao, $pdf);
-                break;
+                    break;
             }
         }
 
@@ -158,7 +159,7 @@ class RelatorioController extends Controller
             }
 
             $pdf = \PDF::loadView('relatorio.relatorioApiario',
-            compact('apiarios', 'total_colmeias', 'total_apiarios'))
+                compact('apiarios', 'total_colmeias', 'total_apiarios'))
                 ->setPaper('a4', $request->orientacao_papel);
 
             return $this->responseRelatorio($request->acao, $pdf);
@@ -175,6 +176,7 @@ class RelatorioController extends Controller
             $qtd_intevercoes_nao_con = $this->qtdIntervencoaPorSituacao(false, $request);
 
             if ($request->situacao == 'todas_intervencoes') {
+
                 if ($request->tipo_intervencao == 'apiario') {
                     $intervencoes = $this->indexIntervencaoApiarios($request->tecnico_id, null);
                     $total_intervencoes = count($intervencoes);
@@ -187,6 +189,7 @@ class RelatorioController extends Controller
                     return $this->responseRelatorio($request->acao, $pdf);
                 }
                 if ($request->tipo_intervencao == 'colmeia') {
+
                     $intervencoes = $this->indexIntervencaoColmeias($request->tecnico_id, null);
                     $total_intervencoes = count($intervencoes);
 
@@ -198,6 +201,7 @@ class RelatorioController extends Controller
                 }
             }
             if ($request->situacao == 'is_concluidas') {
+
                 if ($request->tipo_intervencao == 'apiario') {
                     $intervencoes = $this->indexIntervencaoApiarios($request->tecnico_id, true);
                     $situacao = $request->situacao;
@@ -221,6 +225,7 @@ class RelatorioController extends Controller
                 }
             }
             if ($request->situacao == 'is_nao_concluidas') {
+
                 if ($request->tipo_intervencao == 'apiario') {
                     $intervencoes = $this->indexIntervencaoApiarios($request->tecnico_id, false);
                     $situacao = $request->situacao;
@@ -262,10 +267,10 @@ class RelatorioController extends Controller
         switch ($situacao) {
             case 'is_concluidas':
                 return 'concluidas';
-            break;
+                break;
             case 'is_nao_concluidas':
                 return 'não concluidas';
-            break;
+                break;
             case 'todas_intervencoes':
                 return '';
         }

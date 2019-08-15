@@ -25,7 +25,7 @@
             <td>{{$i->data_inicio}}</td>
             <td>{{$i->data_fim}}</td>
 
-            @if($i->is_concluida)
+            @if($i->is_concluido)
             <td>Sim</td>
             @else
             <td>Não</td>
