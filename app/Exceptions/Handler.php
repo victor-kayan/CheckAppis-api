@@ -28,8 +28,8 @@ class Handler extends ExceptionHandler
 
         $error = [
             'success' => false,
-            // 'message' => 'Erro ao executar esta operação, entre em contato com o administrador do sistema',
-            'message' => $exception->getMessage(),
+            'message' => 'Erro ao executar esta operação, entre em contato com o administrador do sistema',
+            //'message' => $exception->getMessage(),
         ];
 
         if ($exception instanceof ValidationException) {
@@ -54,7 +54,7 @@ class Handler extends ExceptionHandler
             }
         }
 
-        return parent::render($request, $exception);
+       //return parent::render($request, $exception);
 
         return response()->json($error, $statusCode);
     }
