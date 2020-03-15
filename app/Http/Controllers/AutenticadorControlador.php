@@ -56,12 +56,13 @@ class AutenticadorControlador extends Controller
             'password' => $request->password,
         ];
 
+        
         if (!Auth::attempt($credenciais)) {
             return response()->json([
                 'message' => 'Acesso negado',
             ], 401);
         }
-
+        
         $user = $request->user();
         $token = $user->createToken('Token de acesso')->accessToken;
 
