@@ -74,17 +74,41 @@ class VisitaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'visitas_colmeias' => 'array',
-            'visita_apiario' => 'required',
-            'apiario_id' => 'required|exists:apiarios,id',
+            'visita' => 'required',
+            'visita.visita_colmeias' => 'array',
+            'visita.apiario_id' => 'required|exists:apiarios,id',
         ]);
 
+        $visita = $request->visita;
+
+        $dadosVisitaApiario = array(
+            'tem_agua' => $visita['tem_agua'], 
+            'tem_sombra' => $visita['tem_sombra'], 
+            'tem_comida' => $visita['tem_comida'], 
+            'apiario_id' => $visita['apiario_id'], 
+            'observacao' => $visita['observacao'],
+            'qtd_quadros_mel' => $visita['qtd_quadros_mel'], 
+            'qtd_quadros_polen' => $visita['qtd_quadros_polen'], 
+            'qtd_cria_aberta' => $visita['qtd_cria_aberta'], 
+            'qtd_cria_fechada' => $visita['qtd_cria_fechada'], 
+            'qtd_quadros_vazios' => $visita['qtd_quadros_vazios'],
+            'qtd_colmeias_com_postura' => $visita['qtd_colmeias_com_postura'], 
+            'qtd_colmeias_com_abelhas_mortas' => $visita['qtd_colmeias_com_abelhas_mortas'], 
+            'qtd_colmeias_com_zangao' => $visita['qtd_colmeias_com_zangao'], 
+            'qtd_colmeias_com_realeira' => $visita['qtd_colmeias_com_realeira'],
+            'qtd_colmeias_sem_postura' => $visita['qtd_colmeias_sem_postura'], 
+            'qtd_colmeias_sem_abelhas_mortas' => $visita['qtd_colmeias_sem_abelhas_mortas'], 
+            'qtd_colmeias_sem_zangao' => $visita['qtd_colmeias_sem_zangao'], 
+            'qtd_colmeias_sem_realeira' => $visita['qtd_colmeias_sem_realeira'],
+            'qtd_quadros_analizados' => $visita['qtd_quadros_analizados']
+        );
+
         try {
-            DB::transaction(function () use ($request) {
-                $this->visitaApiario = VisitaApiario::create(array_merge($request->visita_apiario, ['apiario_id' => $request->apiario_id]));
+            DB::transaction(function () use ($dadosVisitaApiario, $visita) {
+                $this->visitaApiario = VisitaApiario::create($dadosVisitaApiario);
 
                 if ($this->visitaApiario) {
-                    foreach ($request->visitas_colmeias as $visita_colmeia) {
+                    foreach ($visita['visita_colmeias'] as $visita_colmeia) {
                         VisitaColmeia::create(array_merge($visita_colmeia, ['visita_apiario_id' => $this->visitaApiario->id]));
                     }
                 }
@@ -99,6 +123,8 @@ class VisitaController extends Controller
         $this->visitaApiario->visita_colmeias = VisitaColmeia::where('visita_apiario_id', $this->visitaApiario->id)->with('colmeia')->get();
 
         return response()->json([
+            'uuid' => $request->uuid,
+            'isSynced' => true,            
             'message' => 'Visita registrada com sucesso',
             'visita' => $this->visitaApiario,
         ], 200, [], JSON_NUMERIC_CHECK);
