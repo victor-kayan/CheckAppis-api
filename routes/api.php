@@ -57,6 +57,8 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
     Route::get('apicultor/apiarios/count', 'ApiarioController@countApairosByUser');
     Route::get('apicultor/colmeias/count', 'ColmeiaController@countColmeiasByUser');
     Route::get('apicultor/intervencoes/count', 'IntervencaoController@countIntervencoesByUser');
+
+    Route::get('dados-sincronizacao-offline/mobile', 'OfflineSyncController@indexMobile');
 });
 
 Route::namespace('Api')->group(function () {

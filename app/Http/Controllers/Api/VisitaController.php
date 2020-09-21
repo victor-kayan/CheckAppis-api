@@ -42,28 +42,10 @@ class VisitaController extends Controller
 
     public function visitasByApiario($apiario_id)
     {
-        $visitas = $this->visitaApiario->where('apiario_id', $apiario_id)->orderBy('id', 'DESC')->with('visitaColmeias.colmeia')->get();
-
-        foreach ($visitas as $visita) {
-            $visita->qtd_colmeias_com_postura = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('tem_postura', true)->count();
-            $visita->qtd_colmeias_sem_postura = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('tem_postura', false)->count();
-
-            $visita->qtd_colmeias_com_abelhas_mortas = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('tem_abelhas_mortas', true)->count();
-            $visita->qtd_colmeias_sem_abelhas_mortas = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('tem_abelhas_mortas', false)->count();
-
-            $visita->qtd_colmeias_com_zangao = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('tem_zangao', true)->count();
-            $visita->qtd_colmeias_sem_zangao = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('tem_zangao', false)->count();
-            
-            $visita->qtd_colmeias_com_realeira = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('tem_realeira', true)->count();
-            $visita->qtd_colmeias_sem_realeira = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('tem_realeira', false)->count();
-
-            $visita->qtd_quadros_mel = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('qtd_quadros_mel', '>', 0)->count();
-            $visita->qtd_quadros_polen = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('qtd_quadros_polen', '>', 0)->count();
-            $visita->qtd_cria_aberta = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('qtd_cria_aberta', '>', 0)->count();
-            $visita->qtd_cria_fechada = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('qtd_cria_fechada', '>', 0)->count();
-            $visita->qtd_quadros_vazios = VisitaColmeia::where('visita_apiario_id', $visita->id)->where('qtd_quadros_vazios', '>', 0)->count();
-            $visita->qtd_quadros_analizados = $visita->qtd_quadros_mel + $visita->qtd_quadros_polen + $visita->qtd_cria_aberta + $visita->qtd_cria_fechada + $visita->qtd_quadros_vazios;
-
+        $visitas = $this->visitaApiario->where('apiario_id', $apiario_id)
+            ->orderBy('id', 'DESC')->with('visitaColmeias.colmeia')->get();
+        
+        foreach($visitas as $visita) {
             $visita->isSynced = true;
         }
 
