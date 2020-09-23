@@ -69,7 +69,7 @@ class ApiarioController extends Controller
 
     public function storeAnReturnEndereco($request)
     {
-        $maps = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyA3byNpUcao4ZQud-zGppXCjHSZVOaoygI&address='.$request->latitude.','.$request->longitude;
+        $maps = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAPSboSxwnSqHBZxKv7-ZOJoa9_8crEVJg&address='.$request->latitude.','.$request->longitude;
 
         $result = new \GuzzleHttp\Client();
         $response = $result->get($maps);
