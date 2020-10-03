@@ -44,20 +44,14 @@ class ColmeiaController extends Controller
 
     public function colmeiasApiario($id)
     {
-        $colmeias = Colmeia::where('apiario_id', $id)->get();
+        $colmeias = Colmeia::where('apiario_id', $id)->orderBy('created_at', 'DESC')->get();
+
+        foreach($colmeias as $colmeia) {
+            $colmeia->isSynced = true;
+        }
 
         return response()->json([
             'message' => 'Lista de colmeias do apiario '.$id,
-            'colmeias' => $colmeias,
-        ], 200);
-    }
-
-    public function colmeiasByApiario($id)
-    {
-        $colmeias = Colmeia::where('apiario_id', $id)->get();
-
-        return response()->json([
-            'message' => 'Lista de colmeias do apiario ',
             'colmeias' => $colmeias,
         ], 200);
     }
@@ -79,6 +73,9 @@ class ColmeiaController extends Controller
         $this->colmeia->foto = $this->colmeia->uploadImage($request);
 
         $this->colmeia->save();
+        
+        $this->colmeia->uuid = $request->uuid;
+        $this->colmeia->isSynced = true;
 
         return response()->json([
             'message' => 'Colmeia salva com sucesso',

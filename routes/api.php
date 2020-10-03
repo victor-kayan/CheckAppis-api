@@ -38,7 +38,7 @@ Route::middleware('auth:api')->namespace('Api')->group(function () {
     Route::get('apicultor/colmeiaswithintervencoes/apiarios', 'ApiarioController@getApiariosWithColmeiasWithIntervencoes');
     Route::get('apiario/{apiario_id}/colmeias', 'ColmeiaController@colmeiasApiario');
     Route::get('apiario/colmeias/{apiario_id}', 'ColmeiaController@colmeiasApiario');
-    Route::get('colmeias-por-apiario/{apiario_id}', 'ColmeiaController@colmeiasByApiario');
+    Route::get('colmeias-por-apiario/{apiario_id}', 'ColmeiaController@colmeiasApiario');
     Route::get('apiario/{apiario_id}/visitas', 'VisitaController@visitasByApiario');
     Route::delete('apiario/visitas/{visita_id}', 'VisitaController@destroyVisitaApiario');
 

@@ -22,17 +22,24 @@ class OfflineSyncController extends Controller
 
   public function indexMobile(){
     $userId = auth()->user()->id;
-
-    $apiaries = Apiario::where('apicultor_id', $userId)->get(); // Lista de apiários do usuário logado
+    
+    // Lista de apiários do usuário logado
+    $apiaries = Apiario::where('apicultor_id', $userId)->get();
 
     $listOfApiariesIds = Array();
     foreach ($apiaries as $apiary) {
       array_push($listOfApiariesIds, $apiary->id);
     }
 
-    $hives = Colmeia::whereIn('apiario_id', $listOfApiariesIds)->get(); // Lista de colmeias do usuário logado
+    // Lista de colmeias do usuário logado
+    $hives = Colmeia::whereIn('apiario_id', $listOfApiariesIds)->orderBy('created_at', 'DESC')->get();
     
-    $apiariesInterventions = Intervencao::whereHas('apiario', function ($query) use ($userId) { // Lista de intervenções aos apiários do usuário logado
+    foreach($hives as $hive) {  // Adicionar propriedade 'isSynced' para cada colmeia
+      $hive->isSynced = true;
+    }
+
+    // Lista de intervenções aos apiários do usuário logado
+    $apiariesInterventions = Intervencao::whereHas('apiario', function ($query) use ($userId) {
       $query->where('apicultor_id', $userId);
     })->where('is_concluido', false)->with('apiario')->orderBy('created_at', 'DESC')->get();
 
@@ -40,7 +47,8 @@ class OfflineSyncController extends Controller
       $apiaryIntervention->tecnico = User::find($apiaryIntervention->tecnico_id);
     }
 
-    $hivesInterventions = IntervencaoColmeia::whereHas('colmeia', function ($query) use ($listOfApiariesIds) { // Lista de intervenções às colmeias dos usuário logado
+    // Lista de intervenções às colmeias dos usuário logado
+    $hivesInterventions = IntervencaoColmeia::whereHas('colmeia', function ($query) use ($listOfApiariesIds) {
       $query->whereIn('apiario_id', $listOfApiariesIds);
     })->where('is_concluido', false)->with('colmeia.apiario')->orderBy('created_at', 'DESC')->get();
 
@@ -48,10 +56,11 @@ class OfflineSyncController extends Controller
       $hiveIntervention->tecnico = User::find($hiveIntervention->colmeia->apiario->tecnico_id);
     }
 
-    $visits = VisitaApiario::whereIn('apiario_id', $listOfApiariesIds)  // Lista de visitas do usuário logado
+    // Lista de visitas do usuário logado
+    $visits = VisitaApiario::whereIn('apiario_id', $listOfApiariesIds)
       ->orderBy('created_at', 'DESC')->with('visitaColmeias.colmeia')->get();
 
-    foreach($visits as $visit) {
+    foreach($visits as $visit) {  // Adicionar propriedade 'isSynced' para cada visita
       $visit->isSynced = true;
     }
 
