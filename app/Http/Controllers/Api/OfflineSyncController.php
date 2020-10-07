@@ -34,17 +34,24 @@ class OfflineSyncController extends Controller
     // Lista de colmeias do usuário logado
     $hives = Colmeia::whereIn('apiario_id', $listOfApiariesIds)->orderBy('created_at', 'DESC')->get();
     
-    foreach($hives as $hive) {  // Adicionar propriedade 'isSynced' para cada colmeia
+    foreach ($hives as $hive) {  // Adicionar propriedade 'isSynced' para cada colmeia
       $hive->isSynced = true;
     }
 
     // Lista de intervenções aos apiários do usuário logado
     $apiariesInterventions = Intervencao::whereHas('apiario', function ($query) use ($userId) {
       $query->where('apicultor_id', $userId);
-    })->where('is_concluido', false)->with('apiario')->orderBy('created_at', 'DESC')->get();
+    })->with('apiario')->orderBy('created_at', 'DESC')->get();
+
+    $numberOfConcludedInterventions = 0;
 
     foreach ($apiariesInterventions as $apiaryIntervention) {
       $apiaryIntervention->tecnico = User::find($apiaryIntervention->tecnico_id);
+
+      if ($apiaryIntervention->is_concluido) {
+        $apiaryIntervention->isConclusionSynced = true;
+        $numberOfConcludedInterventions = $numberOfConcludedInterventions + 1;
+      }
     }
 
     // Lista de intervenções às colmeias dos usuário logado
@@ -54,13 +61,14 @@ class OfflineSyncController extends Controller
 
     foreach ($hivesInterventions as $hiveIntervention) {
       $hiveIntervention->tecnico = User::find($hiveIntervention->colmeia->apiario->tecnico_id);
+      // TODO: Listar intervenções concluídas; adicionar propriedade isConclusionSynced e incrementar numberOfConcludedInterventions
     }
 
     // Lista de visitas do usuário logado
     $visits = VisitaApiario::whereIn('apiario_id', $listOfApiariesIds)
       ->orderBy('created_at', 'DESC')->with('visitaColmeias.colmeia')->get();
 
-    foreach($visits as $visit) {  // Adicionar propriedade 'isSynced' para cada visita
+    foreach ($visits as $visit) {  // Adicionar propriedade 'isSynced' para cada visita
       $visit->isSynced = true;
     }
 
@@ -72,7 +80,7 @@ class OfflineSyncController extends Controller
       'visitas' => $visits,
       'intervencoes_apiarios' => $apiariesInterventions,
       'intervencoes_colmeias' => $hivesInterventions,
-      'intervencoes_totais_count' => $apiariesInterventions->count() + $hivesInterventions->count()
+      'intervencoes_totais_count' => $apiariesInterventions->count() + $hivesInterventions->count() - $numberOfConcludedInterventions
     ], 200);
   }  
 }

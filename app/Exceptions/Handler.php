@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Handler extends ExceptionHandler
 {
@@ -43,6 +44,9 @@ class Handler extends ExceptionHandler
             $error['message'] = 'Não autenticado';
             $error['reconnect'] = true;
             $statusCode = 401;
+        } elseif ($exception instanceof ModelNotFoundException) {
+            $error['message'] = 'Nenhum registro correspondente';
+            $statusCode = 404;
         }
 
         if ($this->isHttpException($exception)) {

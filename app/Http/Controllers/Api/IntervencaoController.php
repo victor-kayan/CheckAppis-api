@@ -45,10 +45,14 @@ class IntervencaoController extends Controller
     {
         $intervencoes = Intervencao::whereHas('apiario', function ($query) {
             $query->where('apicultor_id', auth()->user()->id);
-        })->where('is_concluido', false)->with('apiario')->orderBy('created_at', 'DESC')->get();
+        })->with('apiario')->orderBy('created_at', 'DESC')->get();
 
         foreach ($intervencoes as $intervencao) {
             $intervencao->tecnico = User::find($intervencao->tecnico_id);
+
+            if ($intervencao->is_concluido) {
+                $intervencao->isConclusionSynced = true;
+            }
         }
 
         return response()->json([
@@ -57,7 +61,7 @@ class IntervencaoController extends Controller
         ], 200);
     }
 
-    public function concluirIntervencao($intervencao_id)
+    public function concluirIntervencao($intervencao_id) // Concluir intervenção ao apiário
     {
         Intervencao::findOrFail($intervencao_id)->update(['is_concluido' => true]);
 

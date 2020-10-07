@@ -19,7 +19,7 @@ class Colmeia extends Model
     ];
 
     protected $hidden = [
-        'deleted_at', 'updated_at', 'created_at',
+        'deleted_at',
     ];
 
     public function apiario()
