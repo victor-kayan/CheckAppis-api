@@ -31,11 +31,14 @@ class IntervencaoColmeiaController extends Controller
     {
         $intervencoes = IntervencaoColmeia::whereHas('colmeia', function ($query) use ($apiario_id) {
             $query->where('apiario_id', $apiario_id);
-        })->where('is_concluido', false)->with('colmeia.apiario')->orderBy('created_at', 'DESC')->get();
+        })->with('colmeia.apiario')->orderBy('created_at', 'DESC')->get();
 
-        // TODO: Listar intervenções concluídas e adicionar propriedade isConclusionSynced
         foreach ($intervencoes as $intervencao) {
             $intervencao->tecnico = User::find($intervencao->colmeia->apiario->tecnico_id);
+            
+            if ($intervencao->is_concluido) {
+                $intervencao->isConclusionSynced = true;
+            }
         }
 
         return response()->json([

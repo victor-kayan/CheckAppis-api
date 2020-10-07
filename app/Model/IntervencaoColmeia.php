@@ -18,7 +18,7 @@ class IntervencaoColmeia extends Model
     ];
 
     protected $hidden = [
-        'deleted_at', 'updated_at', 'created_at', 'intervencao_id',
+        'deleted_at', 'updated_at', 'intervencao_id',
     ];
 
     public function colmeia()

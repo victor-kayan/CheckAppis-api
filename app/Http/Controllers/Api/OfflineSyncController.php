@@ -57,11 +57,15 @@ class OfflineSyncController extends Controller
     // Lista de intervenções às colmeias dos usuário logado
     $hivesInterventions = IntervencaoColmeia::whereHas('colmeia', function ($query) use ($listOfApiariesIds) {
       $query->whereIn('apiario_id', $listOfApiariesIds);
-    })->where('is_concluido', false)->with('colmeia.apiario')->orderBy('created_at', 'DESC')->get();
+    })->with('colmeia.apiario')->orderBy('created_at', 'DESC')->get();
 
     foreach ($hivesInterventions as $hiveIntervention) {
       $hiveIntervention->tecnico = User::find($hiveIntervention->colmeia->apiario->tecnico_id);
-      // TODO: Listar intervenções concluídas; adicionar propriedade isConclusionSynced e incrementar numberOfConcludedInterventions
+      
+      if ($hiveIntervention->is_concluido) {
+        $hiveIntervention->isConclusionSynced = true;
+        $numberOfConcludedInterventions = $numberOfConcludedInterventions + 1;
+      }
     }
 
     // Lista de visitas do usuário logado
@@ -80,7 +84,7 @@ class OfflineSyncController extends Controller
       'visitas' => $visits,
       'intervencoes_apiarios' => $apiariesInterventions,
       'intervencoes_colmeias' => $hivesInterventions,
-      'intervencoes_totais_count' => $apiariesInterventions->count() + $hivesInterventions->count() - $numberOfConcludedInterventions
+      'intervencoes_pendentes_totais_count' => $apiariesInterventions->count() + $hivesInterventions->count() - $numberOfConcludedInterventions
     ], 200);
   }  
 }
