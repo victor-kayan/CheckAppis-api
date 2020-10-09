@@ -56,7 +56,6 @@ class AutenticadorControlador extends Controller
             'password' => $request->password,
         ];
 
-        
         if (!Auth::attempt($credenciais)) {
             return response()->json([
                 'message' => 'Acesso negado',
@@ -64,13 +63,14 @@ class AutenticadorControlador extends Controller
         }
         
         $user = $request->user();
-        $token = $user->createToken('Token de acesso')->accessToken;
-
+        $token = $user->createToken('Token de acesso')->accessToken;    
         $request->user()->authorizeRoles(['apicultor']);
+        
+        $userWithEndereco = User::where('id', $user->id)->with('endereco.cidade')->get()[0];
 
         return response()->json([
             'token' => $token,
-            'user' => $user,
+            'user' => $userWithEndereco,
         ], 200);
     }
 
