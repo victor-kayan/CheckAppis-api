@@ -59,7 +59,8 @@ class ApiarioController extends Controller
 
     public function apiariosUserLogado()
     {
-        $this->apiario = $this->apiario->where('apicultor_id', auth()->user()->id)->with('colmeias')->get();
+        $this->apiario = $this->apiario->where('apicultor_id', auth()->user()->id)
+            ->with('colmeias')->with('endereco.cidade')->get();
 
         return response()->json([
             'message' => 'Lista de apiarios',

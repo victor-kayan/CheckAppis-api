@@ -24,7 +24,7 @@ class OfflineSyncController extends Controller
     $userId = auth()->user()->id;
     
     // Lista de apiários do usuário logado
-    $apiaries = Apiario::where('apicultor_id', $userId)->get();
+    $apiaries = Apiario::where('apicultor_id', $userId)->with('endereco.cidade')->get();
 
     $listOfApiariesIds = Array();
     foreach ($apiaries as $apiary) {
@@ -76,6 +76,8 @@ class OfflineSyncController extends Controller
       $visit->isSynced = true;
     }
 
+    $numberOfPendingInterventions = $apiariesInterventions->count() + $hivesInterventions->count() - $numberOfConcludedInterventions;
+
     return response()->json([
       'apiarios' => $apiaries,
       'apiarios_count' => $apiaries->count(),
@@ -84,7 +86,7 @@ class OfflineSyncController extends Controller
       'visitas' => $visits,
       'intervencoes_apiarios' => $apiariesInterventions,
       'intervencoes_colmeias' => $hivesInterventions,
-      'intervencoes_pendentes_totais_count' => $apiariesInterventions->count() + $hivesInterventions->count() - $numberOfConcludedInterventions
+      'intervencoes_pendentes_totais_count' => $numberOfPendingInterventions
     ], 200);
   }  
 }
