@@ -127,7 +127,18 @@ class VisitaController extends Controller
 
     public function destroyVisitaApiario($id)
     {
-        $this->visitaApiario->findOrFail($id)->delete();
+        $apiaryVisit = $this->visitaApiario->findOrFail($id);
+
+        try {
+            DB::transaction(function () use ($apiaryVisit) {
+                $apiaryVisit->delete();
+            });
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Falha ao deletar visita',
+                // 'error' => $th,
+            ], 403);
+        }
 
         return response()->json([], 204);
     }
